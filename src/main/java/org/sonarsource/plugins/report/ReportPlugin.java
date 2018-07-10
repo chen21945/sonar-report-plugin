@@ -21,16 +21,15 @@ package org.sonarsource.plugins.report;
 
 import org.sonar.api.Plugin;
 import org.sonar.api.PropertyType;
-import org.sonar.api.config.Category;
 import org.sonar.api.config.PropertyDefinition;
 import org.sonarsource.plugins.report.constant.Categorys;
-import org.sonarsource.plugins.report.constant.PDFReportConfig;
-import org.sonarsource.plugins.report.web.MyPluginPageDefinition;
+import org.sonarsource.plugins.report.constant.ReportConfig;
+import org.sonarsource.plugins.report.extension.ReportPageDefinition;
+import org.sonarsource.plugins.report.extension.ReportPostJob;
+import org.sonarsource.plugins.report.extension.ReportTask;
+import org.sonarsource.plugins.report.extension.ReportWebService;
 
 import java.util.Arrays;
-import java.util.Collections;
-
-import static java.util.Arrays.asList;
 
 /**
  * This class is the entry point for all extensions. It is referenced in pom.xml.
@@ -40,23 +39,27 @@ public class ReportPlugin implements Plugin {
     @Override
     public void define(Context context) {
 
+        // tutorial on hooks
+        // http://docs.sonarqube.org/display/DEV/Adding+Hooks
+//        context.addExtensions(ReportPostJob.class, ReportTask.class);
+        context.addExtension(ReportWebService.class);
         // tutorial on web extensions
-        context.addExtension(MyPluginPageDefinition.class);
+        context.addExtension(ReportPageDefinition.class);
 
         context.addExtensions(Arrays.asList(
-                PropertyDefinition.builder(PDFReportConfig.ENABLED)
+                PropertyDefinition.builder(ReportConfig.ENABLED)
                         .name("Enabled")
                         .description("Whether to automatically generate PDF report")
                         .category(Categorys.PDF_REPORT.getCode())
                         .type(PropertyType.BOOLEAN)
                         .defaultValue("true")
                         .build(),
-                PropertyDefinition.builder(PDFReportConfig.FILE_TYPE)
+                PropertyDefinition.builder(ReportConfig.FILE_TYPE)
                         .name("File Type")
                         .description("the file type to generate")
                         .category(Categorys.PDF_REPORT.getCode())
                         .type(PropertyType.SINGLE_SELECT_LIST)
-                        .options("pdf","excel")
+                        .options("pdf", "excel")
                         .defaultValue("pdf")
                         .build()));
     }

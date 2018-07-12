@@ -10,7 +10,7 @@ import org.sonarsource.plugins.report.support.handler.ReportHandler;
 public class ReportWebService implements WebService {
     @Override
     public void define(Context context) {
-        final NewController controller = context.createController(ReportConfig.WSConfig.CONTROLLER_REPORT);
+        final NewController controller = context.createController(ReportConfig.WSConfig.API_REPORTS);
         NewAction action = controller.createAction("pdf").setHandler(new ReportHandler());
         action.createParam("key").setRequired(true);
         controller.done();

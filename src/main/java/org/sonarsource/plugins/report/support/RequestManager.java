@@ -20,7 +20,7 @@ public final class RequestManager {
      */
     private static final String UTF_8 = "UTF-8";
     /**
-     * Header http for setting the content type of a request
+     * HeaderFooter http for setting the content type of a request
      */
     private static final String CONTENT_TYPE = "content-type";
     /**
@@ -52,7 +52,7 @@ public final class RequestManager {
 
     /**
      * Execute a get http request
-     * @param url url to request
+     * @param url getUrl to request
      * @return response as string
      * @throws IOException error on response
      */
@@ -75,6 +75,7 @@ public final class RequestManager {
         } finally {
             // always close the connexion
             request.reset();
+            httpClient.close();
         }
         // return string result
         return toReturn;
@@ -82,7 +83,7 @@ public final class RequestManager {
 
     /**
      * Execute a get http request
-     * @param url url to request
+     * @param url getUrl to request
      * @param data list of pairs containing resources to post
      * @return response as string
      * @throws IOException error on response

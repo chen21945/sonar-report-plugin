@@ -52,7 +52,6 @@ window.registerExtension('reports/report_page_4_project', function (options) {
                         Console.log("[ERROR] Export failed.");
                         setEnabled(true);
                     });
-
                 };
                 //fill out project's drop down list
                 initProfilesDropDownList();

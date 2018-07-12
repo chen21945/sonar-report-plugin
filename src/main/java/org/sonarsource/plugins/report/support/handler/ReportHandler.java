@@ -18,6 +18,7 @@ public class ReportHandler implements RequestHandler {
     @Override
     public void handle(Request request, Response response) throws Exception {
         log.info("report controller begin");
+        log.info("path={}", request.getPath());
         String projectKey = request.mandatoryParam("key");
         log.info("key ={} ", projectKey);
 

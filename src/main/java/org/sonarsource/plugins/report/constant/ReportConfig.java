@@ -15,10 +15,14 @@ public class ReportConfig {
 
     public class WSConfig {
 
-        public static final String HOST_URL = "http://192.168.56.101:9000/";
+        public static final String HOST_URL = "http://test.sonarqube.csvw.com/";
         /*报表接口*/
         public static final String API_REPORTS = "api/reports";
         /*获取组件接口（项目信息）*/
         public static final String API_COMPONENTS_SHOW = "api/components/show";
+        /*项目分析结果*/
+        public static final String API_ANALYSIS_SEARCH = "api/project_analyses/search";
+        /*项目分析指标*/
+        public static final String API_MEASURES = "api/measures/component";
     }
 }

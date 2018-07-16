@@ -17,7 +17,18 @@ public class BaseService {
     }
 
     public String getUrl(String api, Map<String, Object> params) {
-        String url = getBaseUrl() + api;
+        if (api == null) {
+            return "";
+        }
+        String baseUrl = getBaseUrl();
+        if (!baseUrl.endsWith("/")) {
+            baseUrl = baseUrl + "/";
+        }
+        while (api.startsWith("/")) {
+            api = api.substring(1);
+        }
+        String url = baseUrl + api;
+
         if (params != null && params.size() > 0) {
             StringBuilder paramSb = new StringBuilder();
             params.keySet().forEach(

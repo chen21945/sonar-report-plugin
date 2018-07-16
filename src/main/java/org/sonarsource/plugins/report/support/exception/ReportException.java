@@ -6,4 +6,7 @@ public class ReportException extends RuntimeException {
         super(msg);
     }
 
+    public ReportException(final String msg, Throwable e) {
+        super(msg, e);
+    }
 }

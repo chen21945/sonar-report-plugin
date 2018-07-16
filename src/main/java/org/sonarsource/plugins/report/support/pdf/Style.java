@@ -20,8 +20,11 @@
 package org.sonarsource.plugins.report.support.pdf;
 
 import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvasConstants;
 import com.itextpdf.layout.element.Paragraph;
 import lombok.extern.slf4j.Slf4j;
 import org.sonarsource.plugins.report.support.exception.ReportException;
@@ -67,16 +70,16 @@ public class Style {
         return new Paragraph()
                 .setFont(microsoftYaHei())
                 .setBold()
-                .setFontSize(20)
-                .setHeight(40);
+                .setFontSize(18)
+                .setMarginBottom(12);
     }
 
     public static Paragraph chapterLevel2() {
         return new Paragraph()
                 .setFont(microsoftYaHei())
                 .setBold()
-                .setFontSize(18)
-                .setHeight(30);
+                .setFontSize(16)
+                .setMarginBottom(8);
     }
 
     public static Paragraph text() {
@@ -84,6 +87,28 @@ public class Style {
                 .setFont(microsoftYaHei())
                 .setFontSize(12)
                 .setFirstLineIndent(24);
+    }
+
+    public static Paragraph tableCellLarge() {
+        return new Paragraph()
+                .setFont(microsoftYaHei())
+                .setFontSize(20)
+                .setFontColor(MyColor.COLOR_STEEL_BLUE)
+                .setBold()
+                .setUnderline(MyColor.COLOR_STEEL_BLUE, 0.2F, 0, 0, -0.45F, PdfCanvasConstants.LineCapStyle.BUTT);
+    }
+
+    public static Paragraph tableCellMiddle() {
+        return new Paragraph()
+                .setFont(microsoftYaHei())
+                .setFontSize(12)
+                .setFontColor(MyColor.COLOR_STEEL_BLUE);
+    }
+
+
+    static class MyColor {
+        private static final Color COLOR_BLUE = new DeviceRgb(100, 150, 190);
+        private static final Color COLOR_STEEL_BLUE = new DeviceRgb(54, 100, 139);
     }
 
 

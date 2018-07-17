@@ -2,8 +2,10 @@ package org.sonarsource.plugins.report.model;
 
 import lombok.Data;
 import org.sonarsource.plugins.report.constant.MetricKeys;
+import org.sonarsource.plugins.report.constant.SonarConstants;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +25,14 @@ public class Project {
 
     private Map<String, Measure> measureMap;
     private Analysis analysis;
-    private List<Component> components;
-    private List<Rule> rules;
-    private List<Facet.FacetValue> severities;
-    private List<Facet.FacetValue> issueTypes;
-    private List<Facet.FacetValue> languages;
+
+    private Map<SonarConstants.IssueType, List<Issue>> issueMap = new HashMap<>();
+    private Map<SonarConstants.IssueType, List<Facet.FacetValue>> severityMap = new HashMap<>();
+//    private List<Component> components;
+//    private List<Rule> rules;
+//    private List<Facet.FacetValue> severities;
+//    private List<Facet.FacetValue> issueTypes;
+//    private List<Facet.FacetValue> languages;
 
     public Measure getMeasure(MetricKeys metricKey) {
         if (metricKey == null) {

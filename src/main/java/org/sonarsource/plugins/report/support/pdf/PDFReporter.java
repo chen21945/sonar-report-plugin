@@ -11,8 +11,6 @@ import com.itextpdf.kernel.pdf.PdfName;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.borders.DashedBorder;
-import com.itextpdf.layout.borders.GrooveBorder;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.property.*;
 import lombok.extern.slf4j.Slf4j;
@@ -74,15 +72,8 @@ public class PDFReporter {
         log.info("printing front page");
 
         printFrontPage(document);
-
         printBodyPage(document);
 
-        for (int i = 0; i <= 200; i++) {
-            document.add(new Paragraph("line-" + i + ",Hello World!"));
-            if (i % 7 == 0) {
-                document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-            }
-        }
         document.close();
         pdf.close();
         return outputStream;
@@ -167,7 +158,7 @@ public class PDFReporter {
         Paragraph paragraph;
 
         //代码行数
-        cell = PDFUtils.metricCell(this.project.getMeasureValue(MetricKeys.NCLOC), PropertyUtils.get(MetricKeys.NCLOC.getDesc()));
+        cell = Style.metricCell(this.project.getMeasureValue(MetricKeys.NCLOC), PropertyUtils.get(MetricKeys.NCLOC.getDesc()));
         //目录、类、方法
         paragraph = Style.tableCellMiddle()
                 .setMarginTop(10)
@@ -189,7 +180,7 @@ public class PDFReporter {
         table.addCell(cell);
 
         //注释
-        cell = PDFUtils.metricCell(PDFUtils.percent(this.project.getMeasureValue(MetricKeys.COMMENT_LINES_DENSITY)),
+        cell = Style.metricCell(PDFUtils.percent(this.project.getMeasureValue(MetricKeys.COMMENT_LINES_DENSITY)),
                 PropertyUtils.get(MetricKeys.COMMENT_LINES_DENSITY.getDesc()));
 
         paragraph = Style.tableCellMiddle()
@@ -201,7 +192,7 @@ public class PDFReporter {
         table.addCell(cell);
 
         //复杂度
-        cell = PDFUtils.metricCell(this.project.getMeasureValue(MetricKeys.COMPLEXITY),
+        cell = Style.metricCell(this.project.getMeasureValue(MetricKeys.COMPLEXITY),
                 PropertyUtils.get(MetricKeys.COMPLEXITY.getDesc()));
 
         paragraph = Style.tableCellMiddle()
@@ -251,7 +242,7 @@ public class PDFReporter {
             String value = condition.getActual();
             MetricKeys metricKeys = MetricKeys.get(condition.getMetric());
             String metricName = metricKeys != null ? PropertyUtils.get(metricKeys.getDesc()) : condition.getMetric();
-            Cell cell = PDFUtils.metricCellBordered(value, metricName);
+            Cell cell = Style.metricCellBordered(value, metricName);
             Paragraph paragraph = Style.smallText().add("is greater than ").add(condition.getError());
             cell.add(paragraph);
             table.addCell(cell);
@@ -280,7 +271,7 @@ public class PDFReporter {
                     if (measure == null) {
                         return;
                     }
-                    Cell cell = PDFUtils.metricCellBordered(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
+                    Cell cell = Style.metricCellBordered(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
                     table.addCell(cell);
                 }
         );
@@ -307,7 +298,7 @@ public class PDFReporter {
                     if (measure == null) {
                         return;
                     }
-                    Cell cell = PDFUtils.metricCellBordered(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
+                    Cell cell = Style.metricCellBordered(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
                     table.addCell(cell);
                 }
         );
@@ -323,6 +314,58 @@ public class PDFReporter {
     private void printViolationsDetail(Document document, String number) {
         document.add(Style.chapterLevel2().add(number)
                 .add(PropertyUtils.get(ReportTexts.GENERAL_VIOLATIONS_DETAILS)));
+        List<SonarConstants.IssueType> types = getTypes();
+
+        for (SonarConstants.IssueType type : types) {
+            List<Issue> issues = project.getIssueMap().get(type);
+            if (issues == null || issues.size() == 0) {
+                continue;
+            }
+
+            String typeStr;
+            switch (type.getKey()) {
+                case "BUG":
+                    typeStr = ReportTexts.GENERAL_BUGS;
+                    break;
+                case "VULNERABILITY":
+                    typeStr = ReportTexts.GENERAL_SECURITY;
+                    break;
+                case "CODE_SMELL":
+                    typeStr = ReportTexts.GENERAL_MAINTAINABILITY;
+                    break;
+                default:
+                    typeStr = "";
+                    break;
+            }
+            //issue type
+            document.add(Style.chapterLevel2().add(PropertyUtils.get(typeStr)));
+            Table table = null;
+            String file = "";
+
+            for (Issue issue : issues) {
+                String component = issue.getComponent();
+                if (!file.equals(component) || table == null) {
+                    if (table != null) {
+                        document.add(table);
+                    }
+                    file = component;
+                    table = new Table(new float[]{1, 1, 12, 1})
+                            .setTextAlignment(TextAlignment.LEFT)
+                            .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                            .setWidth(UnitValue.createPercentValue(100))
+                            .setFixedLayout()
+                            .setMarginBottom(10);
+                    document.add(PDFUtils.issueFileName(file));
+                }
+                table.addCell(Style.issueCell().add(Style.tableText().add(PropertyUtils.get(typeStr))));
+                table.addCell(Style.issueCell().add(Style.tableText().add(PropertyUtils.get(PDFUtils.getSeverityText(issue.getSeverity())))));
+                table.addCell(Style.issueCell().add(Style.tableText().add(issue.getMessage())));
+                table.addCell(Style.issueCell().add(Style.tableText().add(String.valueOf(issue.getLine()))));
+            }
+            if (table != null) {
+                document.add(table);
+            }
+        }
     }
 
 
@@ -358,72 +401,44 @@ public class PDFReporter {
     }
 
     private void getAnalysisData() {
+        ComponentService componentService = ComponentService.getInstance();
         //分析指标
-        List<Measure> measures = ComponentService.getInstance().getMeasures(this.projectKey, metricKeys());
+        List<Measure> measures = componentService.getMeasures(this.projectKey, metricKeys());
         Map<String, Measure> measureMap = measures.stream().collect(Collectors.toMap(Measure::getMetric, measure -> measure));
         this.project.setMeasureMap(measureMap);
         //分析结果
-        List<Analysis> analyses = ComponentService.getInstance().getAnalysis(this.projectKey, 1, 1);
+        List<Analysis> analyses = componentService.getAnalysis(this.projectKey, 1, 1);
         if (analyses.size() > 0) {
             this.project.setAnalysis(analyses.get(0));
         }
+
         //issues
-        IssueDto dto = ComponentService.getInstance().getIssues(this.projectKey,
-                Arrays.asList("severities", "types", "rules", "fileUuids", "languages"),
-                100, 1);
-        if (dto != null) {
+        List<SonarConstants.IssueType> types = getTypes();
+        for (SonarConstants.IssueType type : types) {
+            IssueDto dto = componentService.getIssues(this.projectKey,
+                    Arrays.asList("severities"), Arrays.asList(type.getKey()), 100, 1);
+            if (dto == null) {
+                continue;
+            }
+            //severity
             List<Facet> facets = dto.getFacets();
             if (facets != null && facets.size() > 0) {
-                facets.forEach(facet -> {
-                    switch (facet.getProperty()) {
-                        case "severities":
-                            project.setSeverities(facet.getValues());
-                            break;
-                        case "types":
-                            project.setIssueTypes(facet.getValues());
-                            break;
-                        case "languages":
-                            project.setLanguages(facet.getValues());
-                            break;
-                        case "rules":
-                            if (dto.getRules() == null || dto.getRules().size() == 0) {
-                                break;
-                            }
-                            Map<String, Rule> mapRules = dto.getRules().stream().collect(Collectors.toMap(Rule::getKey, rule -> rule));
-                            List<Rule> rules = facet.getValues().stream().map(
-                                    value -> {
-                                        Rule rule = mapRules.get(value.getKey());
-                                        rule.setCount(value.getValue());
-                                        return rule;
-                                    }
-                            ).collect(Collectors.toList());
-                            project.setRules(rules);
-                            break;
-                        case "fileUuids":
-                            List<Component> components = dto.getComponents();
-                            if (components == null || components.size() == 0) {
-                                break;
-                            }
-                            Map<String, Component> componentMap =
-                                    components.stream().collect(Collectors.toMap(Component::getUuid, component -> component));
-                            List<Component> components1 = facet.getValues().stream().map(
-                                    value -> {
-                                        Component component = componentMap.get(value.getKey());
-                                        component.setCount(value.getValue());
-                                        return component;
-                                    }
-                            ).collect(Collectors.toList());
-                            project.setComponents(components1);
-                            break;
-                        default:
-                    }
-                });
+                Facet facet = facets.get(0);
+                if ("severities".equals(facet.getProperty())) {
+                    project.getSeverityMap().put(type, facet.getValues());
+                }
             }
+            //issues detail
+            project.getIssueMap().put(type, dto.getIssues());
         }
     }
 
     private List<String> metricKeys() {
         return Arrays.stream(MetricKeys.values()).map(MetricKeys::getKey).collect(Collectors.toList());
+    }
+
+    private List<SonarConstants.IssueType> getTypes() {
+        return Arrays.asList(SonarConstants.IssueType.values());
     }
 
 

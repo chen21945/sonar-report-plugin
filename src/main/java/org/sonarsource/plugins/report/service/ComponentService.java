@@ -109,11 +109,12 @@ public class ComponentService extends BaseService {
         return Collections.emptyList();
     }
 
-    public IssueDto getIssues(String projectKey, List<String> facets, int pageSize, int pageIndex) {
+    public IssueDto getIssues(String projectKey, List<String> facets, List<String> types, int pageSize, int pageIndex) {
         if (StringUtils.isBlank(projectKey)) {
             return null;
         }
         String facetStr = facets.stream().collect(Collectors.joining(","));
+        String typeStr = types.stream().collect(Collectors.joining(","));
         Map<String, Object> params = new HashMap<>();
         params.put("componentKeys", projectKey);
         params.put("resolved", false);
@@ -122,7 +123,7 @@ public class ComponentService extends BaseService {
         params.put("facets", facetStr);
         params.put("s", "SEVERITY");
         params.put("asc", false);
-        params.put("additionalFields", "all");
+        params.put("types", typeStr);
         String url = getUrl(ReportConfig.WSConfig.API_ISSUES_SEARCH, params);
 
         try {

@@ -44,6 +44,12 @@ public class ReportTexts {
     public static final String GENERAL_MINOR_VIOLATIONS = "general.minorViolations";
     public static final String GENERAL_INFO_VIOLATIONS = "general.infoViolations";
 
+    public static final String GENERAL_ISSUE_TYPE = "general.issueType";
+    public static final String GENERAL_ISSUE_SEVERITY = "general.issueSeverity";
+    public static final String GENERAL_ISSUE_MESSAGE = "general.issueMessage";
+    public static final String GENERAL_ISSUE_LINE = "general.issueLine";
+
+
     public static final String GENERAL_PACKAGES = "general.packages";
 
 

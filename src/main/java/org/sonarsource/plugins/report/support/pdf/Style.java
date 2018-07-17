@@ -26,6 +26,9 @@ import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvasConstants;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.GrooveBorder;
+import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import lombok.extern.slf4j.Slf4j;
 import org.sonarsource.plugins.report.support.exception.ReportException;
@@ -113,10 +116,47 @@ public class Style {
                 .setFontColor(MyColor.COLOR_STEEL_BLUE);
     }
 
+    public static Paragraph tableText() {
+        return new Paragraph()
+                .setFont(microsoftYaHei())
+                .setFontSize(10);
+    }
 
-    static class MyColor {
-        private static final Color COLOR_BLUE = new DeviceRgb(100, 150, 190);
-        private static final Color COLOR_STEEL_BLUE = new DeviceRgb(54, 100, 139);
+    public static Cell metricCell(String value, String text) {
+        return metricCell(value, text, Border.NO_BORDER);
+    }
+
+    public static Cell metricCellBordered(String value, String text) {
+        return metricCell(value, text, new GrooveBorder(0.1F));
+    }
+
+    public static Cell issueCell(){
+        return new Cell()
+                .setBorder(Border.NO_BORDER)
+                .setBorderBottom(new GrooveBorder(0.1F));
+    }
+
+    /**
+     * 指标Cell
+     * 上数值，下名称
+     *
+     * @param value
+     * @param text
+     * @param border
+     * @return
+     */
+    private static Cell metricCell(String value, String text, Border border) {
+        Paragraph ptext = Style.tableCellLarge().add(value);
+        Paragraph pvalue = Style.tableCellMiddle().setFontColor(ColorConstants.DARK_GRAY).add(text);
+        return new Cell().add(ptext).add(pvalue).setBorder(border);
+    }
+
+
+
+    public static class MyColor {
+        public static final Color COLOR_BLUE = new DeviceRgb(100, 150, 190);
+        public static final Color COLOR_STEEL_BLUE = new DeviceRgb(54, 100, 139);
+        public static final Color COLOR_SLATE_GREY = new DeviceRgb(198, 226, 255);
     }
 
 

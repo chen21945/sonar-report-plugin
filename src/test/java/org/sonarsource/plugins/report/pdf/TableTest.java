@@ -92,7 +92,9 @@ public class TableTest {
     public void tableCellTest() throws FileNotFoundException {
         PdfDocument pdfDoc = new PdfDocument(new PdfWriter(DEST));
         Document doc = new Document(pdfDoc);
-        Table table = new Table(1);
+        Table table = new Table(2);
+
+        table.addHeaderCell("this is header cell");
         Paragraph p = Style.tableCellLarge().add("行数");
         p.setUnderline(ColorConstants.GRAY, 0.5F, 0, 0, -0.4F, PdfCanvasConstants.LineCapStyle.BUTT);
 
@@ -100,10 +102,10 @@ public class TableTest {
 
         Cell cell = new Cell().add(p).add(p1);
         table.addCell(cell);
+        table.addCell("12312");
         doc.add(table);
         doc.close();
     }
-
 
 
 }

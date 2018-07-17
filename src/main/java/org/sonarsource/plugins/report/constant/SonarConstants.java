@@ -15,6 +15,10 @@ public class SonarConstants {
 
         private String key;
 
+        public String getKey() {
+            return key;
+        }
+
         Severity(String key) {
             this.key = key;
         }
@@ -26,6 +30,10 @@ public class SonarConstants {
         CODE_SMELL("CODE_SMELL");
 
         private String key;
+
+        public String getKey() {
+            return key;
+        }
 
         IssueType(String key) {
             this.key = key;

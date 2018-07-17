@@ -11,6 +11,9 @@ public class ReportTexts {
 
     public static final String GENERAL_STATIC_ANALYSIS = "general.staticAnalysis";
     public static final String GENERAL_DYNAMIC_ANALYSIS = "general.dynamicAnalysis";
+    public static final String GENERAL_ALERT_STATUS = "general.alertStatus";
+    public static final String GENERAL_CORE_METRICS = "general.coreMetrics";
+    public static final String GENERAL_SEVERITY = "general.severity";
 
     public static final String GENERAL_LINES_OF_CODE = "general.linesOfCode";
     public static final String GENERAL_CLASSES = "general.classes";
@@ -27,12 +30,19 @@ public class ReportTexts {
     public static final String GENERAL_COMMENT_LINES = "general.commentLines";
 
 
-    public static final String GENERAL_DUPLICATED_LINES = "general.duplicatedLines";
+    public static final String GENERAL_BUGS = "general.bugs";
+    public static final String GENERAL_SECURITY = "general.vulnerabilities";
+    public static final String GENERAL_MAINTAINABILITY = "general.codesmells";
+    public static final String GENERAL_TECHNICAL_DEBT = "general.technicalDebt";
+    public static final String GENERAL_COVERAGE = "general.coverage";
+    public static final String GENERAL_DUPLICATED_LINES_DENSITY = "general.duplicatedLinesDensity";
+    public static final String GENERAL_DUPLICATED_BLOCKS = "general.duplicatedBlocks";
 
-
-
-
-
+    public static final String GENERAL_BLOCKER_VIOLATIONS = "general.blockerViolations";
+    public static final String GENERAL_CRITICAL_VIOLATIONS = "general.criticalViolations";
+    public static final String GENERAL_MAJOR_VIOLATIONS = "general.majorViolations";
+    public static final String GENERAL_MINOR_VIOLATIONS = "general.minorViolations";
+    public static final String GENERAL_INFO_VIOLATIONS = "general.infoViolations";
 
     public static final String GENERAL_PACKAGES = "general.packages";
 
@@ -59,17 +69,11 @@ public class ReportTexts {
 
     public static final String GENERAL_VIOLATIONS = "general.violations";
     public static final String GENERAL_NEW_VIOLATIONS = "general.newviolations";
-    public static final String GENERAL_BUGS = "general.bugs";
-    public static final String GENERAL_SECURITY = "general.vulnerabilities";
-    public static final String GENERAL_MAINTAINABILITY = "general.codesmells";
 
-    public static final String GENERAL_BLOCKER_VIOLATIONS = "general.blockerViolations";
 
-    public static final String GENERAL_CRITICAL_VIOLATIONS = "general.criticalViolations";
 
-    public static final String GENERAL_MAJOR_VIOLATIONS = "general.majorViolations";
 
-    public static final String GENERAL_TECHNICAL_DEBT = "general.technicalDebt";
+
 
     public static final String GENERAL_RELIABILITY_REMEDIATION_EFFORT = "general.ReliabilityRemediationEffort";
 
@@ -85,7 +89,7 @@ public class ReportTexts {
 
     public static final String GENERAL_TESTS = "general.tests";
 
-    public static final String GENERAL_COVERAGE = "general.coverage";
+
 
     public static final String GENERAL_CODE_COVERAGE = "general.codeCoverage";
 

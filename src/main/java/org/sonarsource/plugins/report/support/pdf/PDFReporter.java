@@ -11,14 +11,17 @@ import com.itextpdf.kernel.pdf.PdfName;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.DashedBorder;
+import com.itextpdf.layout.borders.GrooveBorder;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.property.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.sonarsource.plugins.report.constant.MetricKeys;
 import org.sonarsource.plugins.report.constant.ReportTexts;
-import org.sonarsource.plugins.report.model.Analysis;
-import org.sonarsource.plugins.report.model.Measure;
-import org.sonarsource.plugins.report.model.Project;
+import org.sonarsource.plugins.report.constant.SonarConstants;
+import org.sonarsource.plugins.report.dto.IssueDto;
+import org.sonarsource.plugins.report.model.*;
 import org.sonarsource.plugins.report.service.ComponentService;
 import org.sonarsource.plugins.report.support.PropertyUtils;
 import org.sonarsource.plugins.report.support.exception.ReportException;
@@ -70,7 +73,6 @@ public class PDFReporter {
                 .setMargins(headerFooter.getHeight() + 20, 36, 36, 36);
         log.info("printing front page");
 
-
         printFrontPage(document);
 
         printBodyPage(document);
@@ -82,6 +84,7 @@ public class PDFReporter {
             }
         }
         document.close();
+        pdf.close();
         return outputStream;
     }
 
@@ -126,12 +129,15 @@ public class PDFReporter {
         if (project == null) {
             return;
         }
-        Paragraph paragraph = Style.chapterLevel1().add("1. ").add(getProject().getName());
+        Paragraph paragraph = Style.chapterLevel1().add("1. ").add(getProject().getName())
+                .add("    ")
+                .add(qualityGate(project.getMeasureValue(MetricKeys.ALERT_STATUS)));
         document.add(paragraph);
         Paragraph text = Style.text().add(PropertyUtils.get(ReportTexts.MAIN_TEXT_MISC_OVERVIEW));
         document.add(text);
         //概述
         printOverView(document, "1.1 ");
+        document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
         //问题分析
         printViolationsAnalysis(document, "1.2");
         //问题详情
@@ -211,13 +217,101 @@ public class PDFReporter {
 
     private void printOverViewDynamic(Document document) {
         document.add(Style.chapterLevel2().add(PropertyUtils.get(ReportTexts.GENERAL_DYNAMIC_ANALYSIS)));
-        Table table = new Table(6)
-                .setBorder(Border.NO_BORDER)
-                .setMarginLeft(20)
-                .setMarginRight(20)
+
+        printQualityGate(document);
+        printMetrics(document);
+        printSeverity(document);
+    }
+
+
+    private void printQualityGate(Document document) {
+        //qualityGate
+        document.add(Style.text()
+                .add(PropertyUtils.get(ReportTexts.GENERAL_ALERT_STATUS))
+                .add("  ")
+                .add(qualityGate(project.getMeasureValue(MetricKeys.ALERT_STATUS))));
+        String detailStr = project.getMeasureValue(MetricKeys.QUALITY_GATE_DETAILS);
+        //quality gate details
+        QualityGateDetail qualityGateDetail = JSON.parseObject(detailStr, QualityGateDetail.class);
+        if (SonarConstants.QUALITY_GATE_OK.equals(qualityGateDetail.getLevel())) {
+            return;
+        }
+        List<QualityGateDetail.QualityGateCondition> errors = qualityGateDetail.getConditions().stream().filter(
+                condition -> SonarConstants.QUALITY_GATE_ERROR.equals(condition.getLevel())
+        ).collect(Collectors.toList());
+        if (errors.size() == 0) {
+            return;
+        }
+        Table table = new Table(errors.size())
                 .setTextAlignment(TextAlignment.CENTER)
                 .setHorizontalAlignment(HorizontalAlignment.CENTER)
-                .setWidth(UnitValue.createPercentValue(100));
+                .setWidth(UnitValue.createPercentValue(100))
+                .setMarginLeft(20);
+        errors.forEach(condition -> {
+            String value = condition.getActual();
+            MetricKeys metricKeys = MetricKeys.get(condition.getMetric());
+            String metricName = metricKeys != null ? PropertyUtils.get(metricKeys.getDesc()) : condition.getMetric();
+            Cell cell = PDFUtils.metricCellBordered(value, metricName);
+            Paragraph paragraph = Style.smallText().add("is greater than ").add(condition.getError());
+            cell.add(paragraph);
+            table.addCell(cell);
+        });
+        document.add(table);
+
+    }
+
+    private void printMetrics(Document document) {
+        document.add(Style.text()
+                .add(PropertyUtils.get(ReportTexts.GENERAL_CORE_METRICS)));
+        Table table = new Table(3)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                .setWidth(UnitValue.createPercentValue(100))
+                .setMarginLeft(20)
+                .setFixedLayout();
+        List<MetricKeys> metricKeys = Arrays.asList(
+                MetricKeys.BUGS, MetricKeys.SECURITY,
+                MetricKeys.MAINTAINABILITY, MetricKeys.COVERAGE,
+                MetricKeys.DUPLICATE_LINE_DENSITY, MetricKeys.DUPLICATED_BLOCKS
+        );
+        metricKeys.forEach(
+                metricKey -> {
+                    Measure measure = project.getMeasure(metricKey);
+                    if (measure == null) {
+                        return;
+                    }
+                    Cell cell = PDFUtils.metricCellBordered(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
+                    table.addCell(cell);
+                }
+        );
+        document.add(table);
+    }
+
+    private void printSeverity(Document document) {
+        document.add(Style.text()
+                .add(PropertyUtils.get(ReportTexts.GENERAL_SEVERITY)));
+        Table table = new Table(5)
+                .setTextAlignment(TextAlignment.CENTER)
+                .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                .setWidth(UnitValue.createPercentValue(100))
+                .setMarginLeft(20)
+                .setFixedLayout();
+        List<MetricKeys> metricKeys = Arrays.asList(
+                MetricKeys.BLOCKER_VIOLATIONS, MetricKeys.CRITICAL_VIOLATIONS,
+                MetricKeys.MAJOR_VIOLATIONS, MetricKeys.MINOR_VIOLATIONS,
+                MetricKeys.INFO_VIOLATIONS
+        );
+        metricKeys.forEach(
+                metricKey -> {
+                    Measure measure = project.getMeasure(metricKey);
+                    if (measure == null) {
+                        return;
+                    }
+                    Cell cell = PDFUtils.metricCellBordered(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
+                    table.addCell(cell);
+                }
+        );
+        document.add(table);
     }
 
     private void printViolationsAnalysis(Document document, String number) {
@@ -244,7 +338,7 @@ public class PDFReporter {
      * 查询项目信息
      *
      * @return Project
-     * @throws IOException
+     * @throws ReportException
      */
     private Project getProject() throws ReportException {
         if (this.project != null && this.project.getId() != null) {
@@ -259,6 +353,10 @@ public class PDFReporter {
         return this.project;
     }
 
+    public Project project() {
+        return this.project;
+    }
+
     private void getAnalysisData() {
         //分析指标
         List<Measure> measures = ComponentService.getInstance().getMeasures(this.projectKey, metricKeys());
@@ -269,11 +367,85 @@ public class PDFReporter {
         if (analyses.size() > 0) {
             this.project.setAnalysis(analyses.get(0));
         }
+        //issues
+        IssueDto dto = ComponentService.getInstance().getIssues(this.projectKey,
+                Arrays.asList("severities", "types", "rules", "fileUuids", "languages"),
+                100, 1);
+        if (dto != null) {
+            List<Facet> facets = dto.getFacets();
+            if (facets != null && facets.size() > 0) {
+                facets.forEach(facet -> {
+                    switch (facet.getProperty()) {
+                        case "severities":
+                            project.setSeverities(facet.getValues());
+                            break;
+                        case "types":
+                            project.setIssueTypes(facet.getValues());
+                            break;
+                        case "languages":
+                            project.setLanguages(facet.getValues());
+                            break;
+                        case "rules":
+                            if (dto.getRules() == null || dto.getRules().size() == 0) {
+                                break;
+                            }
+                            Map<String, Rule> mapRules = dto.getRules().stream().collect(Collectors.toMap(Rule::getKey, rule -> rule));
+                            List<Rule> rules = facet.getValues().stream().map(
+                                    value -> {
+                                        Rule rule = mapRules.get(value.getKey());
+                                        rule.setCount(value.getValue());
+                                        return rule;
+                                    }
+                            ).collect(Collectors.toList());
+                            project.setRules(rules);
+                            break;
+                        case "fileUuids":
+                            List<Component> components = dto.getComponents();
+                            if (components == null || components.size() == 0) {
+                                break;
+                            }
+                            Map<String, Component> componentMap =
+                                    components.stream().collect(Collectors.toMap(Component::getUuid, component -> component));
+                            List<Component> components1 = facet.getValues().stream().map(
+                                    value -> {
+                                        Component component = componentMap.get(value.getKey());
+                                        component.setCount(value.getValue());
+                                        return component;
+                                    }
+                            ).collect(Collectors.toList());
+                            project.setComponents(components1);
+                            break;
+                        default:
+                    }
+                });
+            }
+        }
     }
 
     private List<String> metricKeys() {
         return Arrays.stream(MetricKeys.values()).map(MetricKeys::getKey).collect(Collectors.toList());
     }
 
+
+    private Text qualityGate(String result) {
+        Text qualityGate = new Text("")
+                .setFontColor(ColorConstants.WHITE)
+                .setBackgroundColor(ColorConstants.RED);
+
+        if (StringUtils.isEmpty(result)) {
+            return qualityGate;
+        }
+        switch (result) {
+            case SonarConstants.QUALITY_GATE_ERROR:
+                qualityGate.setText(" Failed  ");
+                break;
+            case SonarConstants.QUALITY_GATE_OK:
+                qualityGate.setText(" Passed  ");
+                break;
+            default:
+                qualityGate = null;
+        }
+        return qualityGate;
+    }
 
 }

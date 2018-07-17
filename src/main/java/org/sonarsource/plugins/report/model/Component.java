@@ -17,4 +17,13 @@ public class Component {
 
     private List<Measure> measures;
 
+    /*issue列表用*/
+    private String longName;
+
+    private String path;
+
+    private String uuid;
+
+    private Integer count;
+
 }

@@ -22,15 +22,17 @@ public class ReportHandler implements RequestHandler {
         String projectKey = request.mandatoryParam("key");
         log.info("key ={} ", projectKey);
 
-        ByteArrayOutputStream stream = new PDFReporter(projectKey).getReport();
+        PDFReporter reporter = new PDFReporter(projectKey);
+        ByteArrayOutputStream stream = reporter.getReport();
         log.info("get report success");
         response.stream().setMediaType("application/octet-stream");
-//        response.setHeader("Content-Disposition",
-//                "attachment; filename=\"" + getFileName(project) + "\"");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=\"" + reporter.project().getName() + "_" + reporter.project().getVersion() + ".pdf\"");
         OutputStream output = response.stream().output();
         log.info("begin to write");
         stream.writeTo(output);
         output.close();
+        stream.close();
         log.info("report controller end");
     }
 

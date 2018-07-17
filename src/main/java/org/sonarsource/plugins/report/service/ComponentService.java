@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.sonarsource.plugins.report.constant.ReportConfig;
 import org.sonarsource.plugins.report.dto.AnalysisDto;
+import org.sonarsource.plugins.report.dto.IssueDto;
 import org.sonarsource.plugins.report.model.Analysis;
 import org.sonarsource.plugins.report.model.Component;
 import org.sonarsource.plugins.report.model.Measure;
@@ -16,7 +17,9 @@ import org.sonarsource.plugins.report.support.exception.ReportException;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -105,6 +108,31 @@ public class ComponentService extends BaseService {
         }
         return Collections.emptyList();
     }
+
+    public IssueDto getIssues(String projectKey, List<String> facets, int pageSize, int pageIndex) {
+        if (StringUtils.isBlank(projectKey)) {
+            return null;
+        }
+        String facetStr = facets.stream().collect(Collectors.joining(","));
+        Map<String, Object> params = new HashMap<>();
+        params.put("componentKeys", projectKey);
+        params.put("resolved", false);
+        params.put("p", pageIndex);
+        params.put("ps", pageSize);
+        params.put("facets", facetStr);
+        params.put("s", "SEVERITY");
+        params.put("asc", false);
+        params.put("additionalFields", "all");
+        String url = getUrl(ReportConfig.WSConfig.API_ISSUES_SEARCH, params);
+
+        try {
+            String result = RequestManager.getInstance().get(url);
+            return JSON.parseObject(result, IssueDto.class);
+        } catch (IOException e) {
+            throw new ReportException("error get issues with key [{" + projectKey + "}]", e);
+        }
+    }
+
 
     public ComponentService(String baseUrl) {
         super.baseUrl = baseUrl;

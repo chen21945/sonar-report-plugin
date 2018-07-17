@@ -23,7 +23,11 @@ public class Project {
 
     private Map<String, Measure> measureMap;
     private Analysis analysis;
-
+    private List<Component> components;
+    private List<Rule> rules;
+    private List<Facet.FacetValue> severities;
+    private List<Facet.FacetValue> issueTypes;
+    private List<Facet.FacetValue> languages;
 
     public Measure getMeasure(MetricKeys metricKey) {
         if (metricKey == null) {

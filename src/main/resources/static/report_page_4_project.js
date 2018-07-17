@@ -45,11 +45,11 @@ window.registerExtension('reports/report_page_4_project', function (options) {
                                 a.remove();
                             };
                             // on success log generation
-                            Console.log("generate PDF success \n");
+                            console.log("generate PDF success \n");
                             setEnabled(true);
                         }).catch(function (error) {
                         // log error
-                        Console.log("[ERROR] Export failed.");
+                        console.log("[ERROR] Export failed." + error);
                         setEnabled(true);
                     });
                 };

@@ -21,6 +21,7 @@ package org.sonarsource.plugins.report.support.pdf;
 
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -87,6 +88,13 @@ public class Style {
                 .setFont(microsoftYaHei())
                 .setFontSize(12)
                 .setFirstLineIndent(24);
+    }
+
+    public static Paragraph smallText() {
+        return new Paragraph()
+                .setFont(microsoftYaHei())
+                .setFontSize(10)
+                .setFontColor(ColorConstants.GRAY);
     }
 
     public static Paragraph tableCellLarge() {

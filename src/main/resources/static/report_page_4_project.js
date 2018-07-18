@@ -38,7 +38,7 @@ window.registerExtension('reports/report_page_4_project', function (options) {
                             reader.onload = function (e) {
                                 // 转换完成，创建一个a标签用于下载
                                 var a = document.createElement('a');
-                                a.download = 'Report.pdf';
+                                a.download = options.component.key + '.pdf';
                                 a.href = e.target.result;
                                 options.el.appendChild(a);
                                 a.click();

@@ -27,12 +27,12 @@ public class ReportHandler implements RequestHandler {
         log.info("get report success");
         response.stream().setMediaType("application/octet-stream");
         response.setHeader("Content-Disposition",
-                "attachment; filename=\"" + reporter.project().getName() + "_" + reporter.project().getVersion() + ".pdf\"");
+                "attachment;filename=\"" + reporter.project().getName() + "_" + reporter.project().getVersion() + ".pdf\"");
         OutputStream output = response.stream().output();
         log.info("begin to write");
         stream.writeTo(output);
-        output.close();
         stream.close();
+        output.close();
         log.info("report controller end");
     }
 

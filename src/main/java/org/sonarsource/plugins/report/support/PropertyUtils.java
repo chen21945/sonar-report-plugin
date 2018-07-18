@@ -16,7 +16,8 @@ public class PropertyUtils {
     static {
         try {
             properties = new Properties();
-            properties.load(new BufferedReader(new InputStreamReader(PropertyUtils.class.getResourceAsStream("/report-texts-cn.properties"),"GBK")));
+            properties.load(new BufferedReader(new InputStreamReader(PropertyUtils.class.getResourceAsStream("/report-texts-cn.properties"),"UTF-8")));
+//            properties.load(new BufferedReader(new InputStreamReader(PropertyUtils.class.getResourceAsStream("/report-texts.properties"))));
         } catch (IOException e) {
             e.printStackTrace();
             log.error("load properties error");
@@ -24,7 +25,7 @@ public class PropertyUtils {
     }
 
     public static String get(String key) {
-        return ObjectUtils.defaultIfNull(properties.getProperty(key),"");
+        return ObjectUtils.defaultIfNull(properties.getProperty(key), "");
     }
 
 

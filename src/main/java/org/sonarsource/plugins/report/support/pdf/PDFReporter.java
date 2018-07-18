@@ -1,10 +1,11 @@
 package org.sonarsource.plugins.report.support.pdf;
 
 import com.alibaba.fastjson.JSON;
+import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
-import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfName;
@@ -30,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,7 +42,6 @@ public class PDFReporter {
 
     private String projectKey;
     private Project project;
-
 
     public PDFReporter(String projectKey) {
         this.projectKey = projectKey;
@@ -63,17 +64,17 @@ public class PDFReporter {
         pdf.addEventHandler(PdfDocumentEvent.END_PAGE, headerFooter);
 
         //文档默认属性
-        PdfFont font = Style.microsoftYaHei();
         document.setTextAlignment(TextAlignment.JUSTIFIED)
-                .setFont(font)
+                .setFont(PdfFontFactory.createFont(Style.microsoftYaHei(), PdfEncodings.IDENTITY_H, true))
                 .setFontSize(12)
                 .setFontColor(ColorConstants.DARK_GRAY)
                 .setMargins(headerFooter.getHeight() + 20, 36, 36, 36);
-        log.info("printing front page");
 
         printFrontPage(document);
+
         printBodyPage(document);
 
+        log.info("print success");
         document.close();
         pdf.close();
         return outputStream;
@@ -87,6 +88,7 @@ public class PDFReporter {
      * @throws ReportException
      */
     private void printFrontPage(Document document) throws IOException, ReportException {
+        log.info("printing front page");
         //首页logo
         Image image = new Image(ImageDataFactory.create(getLogo()))
                 .setWidth(document.getPdfDocument().getDefaultPageSize().getWidth() * 2 / 3)
@@ -116,6 +118,7 @@ public class PDFReporter {
     }
 
     private void printBodyPage(Document document) throws IOException, ReportException {
+        log.info("printing body page");
         Project project = getProject();
         if (project == null) {
             return;
@@ -129,8 +132,6 @@ public class PDFReporter {
         //概述
         printOverView(document, "1.1 ");
         document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-        //问题分析
-//        printViolationsAnalysis(document, "1.2");
         //问题详情
         printViolationsDetail(document, "1.2");
 
@@ -233,7 +234,8 @@ public class PDFReporter {
         if (errors.size() == 0) {
             return;
         }
-        Table table = new Table(errors.size())
+        int columns = errors.size() > 4 ? 4 : errors.size();
+        Table table = new Table(columns)
                 .setTextAlignment(TextAlignment.CENTER)
                 .setHorizontalAlignment(HorizontalAlignment.CENTER)
                 .setWidth(UnitValue.createPercentValue(100))
@@ -242,7 +244,7 @@ public class PDFReporter {
             String value = condition.getActual();
             MetricKeys metricKeys = MetricKeys.get(condition.getMetric());
             String metricName = metricKeys != null ? PropertyUtils.get(metricKeys.getDesc()) : condition.getMetric();
-            Cell cell = Style.metricCellBorderedWithImg(value, metricName);
+            Cell cell = Style.metricCellBordered(value, metricName);
             Paragraph paragraph = Style.smallText().add("is greater than ").add(condition.getError());
             cell.add(paragraph);
             table.addCell(cell);
@@ -271,7 +273,7 @@ public class PDFReporter {
                     if (measure == null) {
                         return;
                     }
-                    Cell cell = Style.metricCellBorderedWithImg(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
+                    Cell cell = Style.metricCellBordered(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
                     table.addCell(cell);
                 }
         );
@@ -301,16 +303,11 @@ public class PDFReporter {
                     Cell cell = Style.metricCellBorderedWithImg(
                             measure.getValue(),
                             PropertyUtils.get(metricKey.getDesc()),
-                            Style.getSeverityImg(PDFUtils.getSeverity(metricKey.getKey())));
+                            getSeverityImg(PDFUtils.getSeverity(metricKey.getKey())));
                     table.addCell(cell);
                 }
         );
         document.add(table);
-    }
-
-    private void printViolationsAnalysis(Document document, String number) {
-        document.add(Style.chapterLevel2().add(number)
-                .add(PropertyUtils.get(ReportTexts.GENERAL_VIOLATIONS_ANALYSIS)));
     }
 
 
@@ -366,7 +363,7 @@ public class PDFReporter {
                 table.addCell(Style.issueCell().add(Style.tableText().add(PropertyUtils.get(typeStr))));
                 table.addCell(Style.issueCell().add(
                         Style.tableText()
-                                .add(Style.getSeverityImg(issue.getSeverity()))
+                                .add(getSeverityImg(issue.getSeverity()))
                                 .add(" ")
                                 .add(PropertyUtils.get(PDFUtils.getSeverityText(issue.getSeverity())))));
                 table.addCell(Style.issueCell().add(Style.tableText().add(issue.getMessage())));
@@ -471,6 +468,21 @@ public class PDFReporter {
                 qualityGate = null;
         }
         return qualityGate;
+    }
+
+
+    private Map<SonarConstants.Severity, Image> severityImgMap;
+
+    protected Image getSeverityImg(SonarConstants.Severity severity) {
+        if (severityImgMap == null) {
+            severityImgMap = new HashMap<>();
+            Image image;
+            for (SonarConstants.Severity s : SonarConstants.Severity.values()) {
+                image = new Image(ImageDataFactory.create(Style.class.getResource("/static/img/severity_" + s.getKey().toLowerCase() + ".png")));
+                severityImgMap.put(s, image);
+            }
+        }
+        return severityImgMap.get(severity);
     }
 
 }

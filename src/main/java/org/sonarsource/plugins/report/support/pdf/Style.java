@@ -19,13 +19,11 @@
  */
 package org.sonarsource.plugins.report.support.pdf;
 
-import com.itextpdf.io.font.PdfEncodings;
-import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.io.font.FontProgram;
+import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvasConstants;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.GrooveBorder;
@@ -33,28 +31,25 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import lombok.extern.slf4j.Slf4j;
-import org.sonarsource.plugins.report.constant.SonarConstants;
 import org.sonarsource.plugins.report.support.exception.ReportException;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public class Style {
 
     public class FontType {
-        static final String MICROSOFT_YAHEI = "static/font/MicrosoftYaHei.ttf";
+        public static final String MICROSOFT_YAHEI = "/static/font/MicrosoftYaHei.ttf";
 
     }
 
-    private static PdfFont microsoftYaHei;
-    private static PdfFont stSong;
+    private static FontProgram microsoftYaHei;
+    private static FontProgram stSong;
 
-    public static PdfFont microsoftYaHei() {
+    public static FontProgram microsoftYaHei() {
         if (microsoftYaHei == null) {
             try {
-                microsoftYaHei = PdfFontFactory.createFont(FontType.MICROSOFT_YAHEI, PdfEncodings.IDENTITY_H, true);
+                microsoftYaHei = FontProgramFactory.createFont(FontType.MICROSOFT_YAHEI);
             } catch (IOException e) {
                 log.error("load microsoft YaHei font failed", e);
                 throw new ReportException("load  microsoft YaHei font failed");
@@ -62,22 +57,21 @@ public class Style {
         }
         return microsoftYaHei;
     }
-
-    public static PdfFont stSong() {
-        if (stSong == null) {
-            try {
-                stSong = PdfFontFactory.createFont("STSongStd-Light", "UniGB-UCS2-H", true);
-            } catch (IOException e) {
-                log.error("load ST-Song font failed", e);
-                throw new ReportException("load ST-Song font failed ");
-            }
-        }
-        return stSong;
-    }
+//
+//    public static PdfFont stSong() {
+//        if (stSong == null) {
+//            try {
+//                stSong = PdfFontFactory.createFont("STSongStd-Light", "UniGB-UCS2-H", true);
+//            } catch (IOException e) {
+//                log.error("load ST-Song font failed", e);
+//                throw new ReportException("load ST-Song font failed ");
+//            }
+//        }
+//        return stSong;
+//    }
 
     public static Paragraph chapterLevel1() {
         return new Paragraph()
-                .setFont(microsoftYaHei())
                 .setBold()
                 .setFontSize(18)
                 .setMarginBottom(12);
@@ -85,7 +79,6 @@ public class Style {
 
     public static Paragraph chapterLevel2() {
         return new Paragraph()
-                .setFont(microsoftYaHei())
                 .setBold()
                 .setFontSize(16)
                 .setMarginBottom(8);
@@ -93,21 +86,18 @@ public class Style {
 
     public static Paragraph text() {
         return new Paragraph()
-                .setFont(microsoftYaHei())
                 .setFontSize(12)
                 .setFirstLineIndent(24);
     }
 
     public static Paragraph smallText() {
         return new Paragraph()
-                .setFont(microsoftYaHei())
                 .setFontSize(10)
                 .setFontColor(ColorConstants.GRAY);
     }
 
     public static Paragraph tableCellLarge() {
         return new Paragraph()
-                .setFont(microsoftYaHei())
                 .setFontSize(20)
                 .setFontColor(MyColor.COLOR_STEEL_BLUE)
                 .setBold()
@@ -116,14 +106,12 @@ public class Style {
 
     public static Paragraph tableCellMiddle() {
         return new Paragraph()
-                .setFont(microsoftYaHei())
                 .setFontSize(12)
                 .setFontColor(MyColor.COLOR_STEEL_BLUE);
     }
 
     public static Paragraph tableText() {
         return new Paragraph()
-                .setFont(microsoftYaHei())
                 .setFontSize(10);
     }
 
@@ -131,7 +119,7 @@ public class Style {
         return metricCell(value, text, Border.NO_BORDER);
     }
 
-    public static Cell metricCellBorderedWithImg(String value, String text) {
+    public static Cell metricCellBordered(String value, String text) {
         return metricCell(value, text, new GrooveBorder(0.1F));
     }
 
@@ -172,21 +160,6 @@ public class Style {
         public static final Color COLOR_BLUE = new DeviceRgb(100, 150, 190);
         public static final Color COLOR_STEEL_BLUE = new DeviceRgb(54, 100, 139);
         public static final Color COLOR_SLATE_GREY = new DeviceRgb(198, 226, 255);
-    }
-
-
-    private static Map<SonarConstants.Severity, Image> severityImgMap;
-
-    public static Image getSeverityImg(SonarConstants.Severity severity) {
-        if (severityImgMap == null) {
-            severityImgMap = new HashMap<>();
-            Image image;
-            for (SonarConstants.Severity s : SonarConstants.Severity.values()) {
-                image = new Image(ImageDataFactory.create(Style.class.getResource("/static/img/severity_" + s.getKey().toLowerCase() + ".png")));
-                severityImgMap.put(s, image);
-            }
-        }
-        return severityImgMap.get(severity);
     }
 
 

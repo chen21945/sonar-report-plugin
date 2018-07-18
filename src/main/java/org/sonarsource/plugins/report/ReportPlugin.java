@@ -25,8 +25,6 @@ import org.sonar.api.config.PropertyDefinition;
 import org.sonarsource.plugins.report.constant.Categorys;
 import org.sonarsource.plugins.report.constant.ReportConfig;
 import org.sonarsource.plugins.report.extension.ReportPageDefinition;
-import org.sonarsource.plugins.report.extension.ReportPostJob;
-import org.sonarsource.plugins.report.extension.ReportTask;
 import org.sonarsource.plugins.report.extension.ReportWebService;
 
 import java.util.Arrays;

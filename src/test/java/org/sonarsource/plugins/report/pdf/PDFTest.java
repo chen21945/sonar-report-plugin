@@ -45,6 +45,19 @@ public class PDFTest {
         fos.close();
     }
 
+    @Test
+    public void getReportTwiceTest() throws IOException {
+        String projectKey = "IM";
+        for (int i = 0; i <= 1; i++) {
+            PDFReporter reporter = new PDFReporter(projectKey);
+            ByteArrayOutputStream baos = reporter.getReport();
+            FileOutputStream fos = new FileOutputStream("C:/Users/yangchengang2.CNSVWSH00/desktop/" + projectKey + i + ".pdf");
+            baos.writeTo(fos);
+            fos.flush();
+            fos.close();
+        }
+    }
+
 
     public static void main(String[] args) {
         System.out.println(PropertyUtils.class.getResourceAsStream("/report-texts.properties"));

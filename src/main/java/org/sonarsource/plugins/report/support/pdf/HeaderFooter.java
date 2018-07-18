@@ -19,6 +19,7 @@
  */
 package org.sonarsource.plugins.report.support.pdf;
 
+import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.events.Event;
@@ -32,9 +33,7 @@ import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.Document;
 import lombok.extern.slf4j.Slf4j;
-import org.sonarsource.plugins.report.support.exception.ReportException;
 
-import java.io.IOException;
 import java.net.URL;
 
 @Slf4j
@@ -46,6 +45,7 @@ public class HeaderFooter implements IEventHandler {
     private URL sonarLogo;
     private String projectNm;
     private URL svwLogo;
+    private PdfFont font;
     private float height = 56;
 
 
@@ -68,7 +68,7 @@ public class HeaderFooter implements IEventHandler {
         float width = (pageSize.getWidth() - document.getLeftMargin() - document.getRightMargin()) / 4;
         PdfCanvas canvas = new PdfCanvas(page.newContentStreamBefore(), page.getResources(), pdfDoc);
 
-        PdfFont font = Style.microsoftYaHei();
+        font = PdfFontFactory.createFont(Style.microsoftYaHei(), PdfEncodings.IDENTITY_H, true);
         //header
         canvas.addImage(ImageDataFactory.create(svwLogo),
                 pageSize.getX() + document.getLeftMargin(),
@@ -77,7 +77,7 @@ public class HeaderFooter implements IEventHandler {
                 false);
         canvas.beginText()
                 .setFillColor(ColorConstants.GRAY)
-                .moveText(pageSize.getX() + document.getLeftMargin() + 2 * width - 10, pageSize.getTop() - height + 5)
+                .moveText(pageSize.getX() + document.getLeftMargin() + 2 * width - this.projectNm.length() * 5, pageSize.getTop() - height + 5)
                 .setFontAndSize(font, 22)
                 .showText(this.projectNm)
                 .endText();

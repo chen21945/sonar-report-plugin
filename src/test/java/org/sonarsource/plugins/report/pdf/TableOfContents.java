@@ -1,23 +1,17 @@
 package org.sonarsource.plugins.report.pdf;
 
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.io.font.FontEncoding;
+import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.*;
-import com.itextpdf.kernel.pdf.action.PdfAction;
-import com.itextpdf.kernel.pdf.canvas.draw.DottedLine;
 import com.itextpdf.kernel.pdf.navigation.PdfDestination;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Tab;
-import com.itextpdf.layout.element.TabStop;
 import com.itextpdf.layout.hyphenation.HyphenationConfig;
 import com.itextpdf.layout.layout.LayoutContext;
 import com.itextpdf.layout.layout.LayoutResult;
 import com.itextpdf.layout.property.AreaBreakType;
-import com.itextpdf.layout.property.TabAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.renderer.ParagraphRenderer;
 import org.sonarsource.plugins.report.support.pdf.Style;
@@ -44,8 +38,8 @@ public class TableOfContents {
         PdfDocument pdf = new PdfDocument(new PdfWriter(dest));
         pdf.getCatalog().setPageMode(PdfName.UseOutlines);
 
-        PdfFont font = Style.microsoftYaHei();
-        PdfFont bold = Style.stSong();
+        PdfFont font = PdfFontFactory.createFont(Style.FontType.MICROSOFT_YAHEI, PdfEncodings.IDENTITY_H, true);
+        PdfFont bold = PdfFontFactory.createFont("STSongStd-Light", "UniGB-UCS2-H", true);
 
         Document document = new Document(pdf);
         document.setTextAlignment(TextAlignment.JUSTIFIED)

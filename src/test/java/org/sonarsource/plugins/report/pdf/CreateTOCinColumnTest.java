@@ -11,21 +11,24 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.renderer.DrawContext;
 import com.itextpdf.layout.renderer.TextRenderer;
+import org.sonarsource.plugins.report.support.pdf.Style;
 
 import java.util.ArrayList;
 
 public class CreateTOCinColumnTest {
 
     public static final String DEST = "C:\\Users\\yangchengang2.CNSVWSH00\\Desktop\\create_toc_in_column.pdf";
+    public static final String DEST1 = "C:\\Users\\yangchengang2.CNSVWSH00\\Desktop\\create_toc_in_column123.pdf";
 
     protected java.util.List<TOCEntry> list = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
         new CreateTOCinColumnTest().manipulatePdf(DEST);
+        new CreateTOCinColumnTest().manipulatePdf(DEST1);
     }
 
     protected void manipulatePdf(String dest) throws Exception {
-        PdfDocument pdfDoc = new PdfDocument(new PdfWriter(DEST));
+        PdfDocument pdfDoc = new PdfDocument(new PdfWriter(dest));
         Document doc = new Document(pdfDoc);
         Rectangle[] columns = {
                 new Rectangle(36, 36, 173, 770),
@@ -45,7 +48,7 @@ public class CreateTOCinColumnTest {
             TOCTextRenderer renderer = new TOCTextRenderer(c);
             renderer.setRoot(root);
             c.setNextRenderer(renderer);
-            doc.add(new Paragraph(c));
+            doc.add(Style.text().add(c));
             doc.add(createTable(start, end));
         }
         doc.add(new AreaBreak());

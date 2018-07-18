@@ -130,9 +130,9 @@ public class PDFReporter {
         printOverView(document, "1.1 ");
         document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
         //问题分析
-        printViolationsAnalysis(document, "1.2");
+//        printViolationsAnalysis(document, "1.2");
         //问题详情
-        printViolationsDetail(document, "1.3");
+        printViolationsDetail(document, "1.2");
 
     }
 
@@ -242,7 +242,7 @@ public class PDFReporter {
             String value = condition.getActual();
             MetricKeys metricKeys = MetricKeys.get(condition.getMetric());
             String metricName = metricKeys != null ? PropertyUtils.get(metricKeys.getDesc()) : condition.getMetric();
-            Cell cell = Style.metricCellBordered(value, metricName);
+            Cell cell = Style.metricCellBorderedWithImg(value, metricName);
             Paragraph paragraph = Style.smallText().add("is greater than ").add(condition.getError());
             cell.add(paragraph);
             table.addCell(cell);
@@ -271,7 +271,7 @@ public class PDFReporter {
                     if (measure == null) {
                         return;
                     }
-                    Cell cell = Style.metricCellBordered(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
+                    Cell cell = Style.metricCellBorderedWithImg(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
                     table.addCell(cell);
                 }
         );
@@ -298,7 +298,10 @@ public class PDFReporter {
                     if (measure == null) {
                         return;
                     }
-                    Cell cell = Style.metricCellBordered(measure.getValue(), PropertyUtils.get(metricKey.getDesc()));
+                    Cell cell = Style.metricCellBorderedWithImg(
+                            measure.getValue(),
+                            PropertyUtils.get(metricKey.getDesc()),
+                            Style.getSeverityImg(PDFUtils.getSeverity(metricKey.getKey())));
                     table.addCell(cell);
                 }
         );
@@ -338,7 +341,10 @@ public class PDFReporter {
                     break;
             }
             //issue type
-            document.add(Style.chapterLevel2().add(PropertyUtils.get(typeStr)));
+            Paragraph header = Style.chapterLevel2().add(PropertyUtils.get(typeStr));
+            List<Facet.FacetValue> facetValues = project.getSeverityMap().get(type);
+            //TODO
+            document.add(header);
             Table table = null;
             String file = "";
 
@@ -349,7 +355,7 @@ public class PDFReporter {
                         document.add(table);
                     }
                     file = component;
-                    table = new Table(new float[]{1, 1, 12, 1})
+                    table = new Table(new float[]{1F, 1.5F, 11, 1})
                             .setTextAlignment(TextAlignment.LEFT)
                             .setHorizontalAlignment(HorizontalAlignment.CENTER)
                             .setWidth(UnitValue.createPercentValue(100))
@@ -358,7 +364,11 @@ public class PDFReporter {
                     document.add(PDFUtils.issueFileName(file));
                 }
                 table.addCell(Style.issueCell().add(Style.tableText().add(PropertyUtils.get(typeStr))));
-                table.addCell(Style.issueCell().add(Style.tableText().add(PropertyUtils.get(PDFUtils.getSeverityText(issue.getSeverity())))));
+                table.addCell(Style.issueCell().add(
+                        Style.tableText()
+                                .add(Style.getSeverityImg(issue.getSeverity()))
+                                .add(" ")
+                                .add(PropertyUtils.get(PDFUtils.getSeverityText(issue.getSeverity())))));
                 table.addCell(Style.issueCell().add(Style.tableText().add(issue.getMessage())));
                 table.addCell(Style.issueCell().add(Style.tableText().add(String.valueOf(issue.getLine()))));
             }

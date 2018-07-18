@@ -30,6 +30,22 @@ public class PDFUtils {
         }
     }
 
+    public static SonarConstants.Severity getSeverity(String metricKey) {
+        switch (metricKey) {
+            case ("blocker_violations"):
+                return SonarConstants.Severity.BLOCKER;
+            case ("critical_violations"):
+                return SonarConstants.Severity.CRITICAL;
+            case ("major_violations"):
+                return SonarConstants.Severity.MAJOR;
+            case ("minor_violations"):
+                return SonarConstants.Severity.MINOR;
+            case ("info_violations"):
+                return SonarConstants.Severity.INFO;
+            default:
+                return null;
+        }
+    }
 
     public static Paragraph issueFileName(String file) {
         int nameIndex = file.lastIndexOf("/") + 1;

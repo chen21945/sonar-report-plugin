@@ -20,6 +20,7 @@
 package org.sonarsource.plugins.report.support.pdf;
 
 import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
@@ -29,11 +30,15 @@ import com.itextpdf.kernel.pdf.canvas.PdfCanvasConstants;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.GrooveBorder;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import lombok.extern.slf4j.Slf4j;
+import org.sonarsource.plugins.report.constant.SonarConstants;
 import org.sonarsource.plugins.report.support.exception.ReportException;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class Style {
@@ -126,15 +131,26 @@ public class Style {
         return metricCell(value, text, Border.NO_BORDER);
     }
 
-    public static Cell metricCellBordered(String value, String text) {
+    public static Cell metricCellBorderedWithImg(String value, String text) {
         return metricCell(value, text, new GrooveBorder(0.1F));
     }
 
-    public static Cell issueCell(){
+    public static Cell metricCellBorderedWithImg(String value, String text, Image image) {
+        Paragraph ptext = Style.tableCellLarge().add(value);
+        Paragraph pvalue = Style.tableCellMiddle().setFontColor(ColorConstants.DARK_GRAY)
+                .add(image)
+                .add(" ")
+                .add(text);
+        return new Cell().add(ptext).add(pvalue).setBorder(new GrooveBorder(0.1F));
+    }
+
+
+    public static Cell issueCell() {
         return new Cell()
                 .setBorder(Border.NO_BORDER)
                 .setBorderBottom(new GrooveBorder(0.1F));
     }
+
 
     /**
      * 指标Cell
@@ -152,11 +168,25 @@ public class Style {
     }
 
 
-
     public static class MyColor {
         public static final Color COLOR_BLUE = new DeviceRgb(100, 150, 190);
         public static final Color COLOR_STEEL_BLUE = new DeviceRgb(54, 100, 139);
         public static final Color COLOR_SLATE_GREY = new DeviceRgb(198, 226, 255);
+    }
+
+
+    private static Map<SonarConstants.Severity, Image> severityImgMap;
+
+    public static Image getSeverityImg(SonarConstants.Severity severity) {
+        if (severityImgMap == null) {
+            severityImgMap = new HashMap<>();
+            Image image;
+            for (SonarConstants.Severity s : SonarConstants.Severity.values()) {
+                image = new Image(ImageDataFactory.create(Style.class.getResource("/static/img/severity_" + s.getKey().toLowerCase() + ".png")));
+                severityImgMap.put(s, image);
+            }
+        }
+        return severityImgMap.get(severity);
     }
 
 

@@ -87,7 +87,7 @@ public class PDFReporter {
      * @throws IOException
      * @throws ReportException
      */
-    private void printFrontPage(Document document) throws IOException, ReportException {
+    private void printFrontPage(Document document) throws ReportException {
         log.info("printing front page");
         //首页logo
         Image image = new Image(ImageDataFactory.create(getLogo()))
@@ -381,7 +381,7 @@ public class PDFReporter {
     }
 
     private URL getSvwLogo() {
-        return this.getClass().getResource("/static/img/csvw.jpg");
+        return this.getClass().getResource("/static/img/svw.png");
     }
 
     /**

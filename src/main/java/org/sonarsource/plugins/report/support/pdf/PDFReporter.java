@@ -30,10 +30,8 @@ import org.sonarsource.plugins.report.util.PDFUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -42,6 +40,7 @@ public class PDFReporter {
 
     private String projectKey;
     private Project project;
+    private List<String> issueTypes;
 
     public PDFReporter(String projectKey) {
         this.projectKey = projectKey;
@@ -418,34 +417,58 @@ public class PDFReporter {
         if (analyses.size() > 0) {
             this.project.setAnalysis(analyses.get(0));
         }
-
         //issues
         List<SonarConstants.IssueType> types = getTypes();
         for (SonarConstants.IssueType type : types) {
-            IssueDto dto = componentService.getIssues(this.projectKey,
-                    Arrays.asList("severities"), Arrays.asList(type.getKey()), 100, 1);
-            if (dto == null) {
-                continue;
-            }
             //severity
-            List<Facet> facets = dto.getFacets();
+            List<Facet> facets = componentService.getFacets(this.projectKey, Arrays.asList("severities"), Arrays.asList(type.getKey()));
             if (facets != null && facets.size() > 0) {
                 Facet facet = facets.get(0);
                 if ("severities".equals(facet.getProperty())) {
                     project.getSeverityMap().put(type, facet.getValues());
                 }
             }
+
             //issues detail
-            project.getIssueMap().put(type, dto.getIssues());
+            int pageIndex = 0;
+            int pageSize = 100;
+            List<Issue> issues = new ArrayList<>();
+            IssueDto issueDto;
+            int total;
+            do {
+                issueDto = componentService.getIssueDto(this.projectKey, Arrays.asList("severities"), Arrays.asList(type.getKey()), pageSize, ++pageIndex);
+                if (issueDto == null || issueDto.getTotal() == null) {
+                    break;
+                }
+                if (issueDto.getIssues() != null && issueDto.getIssues().size() > 0) {
+                    issues.addAll(issueDto.getIssues());
+                }
+                total = issueDto.getTotal();
+            } while (pageIndex * pageSize < total);
+            project.getIssueMap().put(type, issues);
         }
     }
+
 
     private List<String> metricKeys() {
         return Arrays.stream(MetricKeys.values()).map(MetricKeys::getKey).collect(Collectors.toList());
     }
 
     private List<SonarConstants.IssueType> getTypes() {
+        if (this.issueTypes != null && issueTypes.size() > 0) {
+            return issueTypes.stream().map(SonarConstants.IssueType::get)
+                    .collect(Collectors.toList());
+        }
         return Arrays.asList(SonarConstants.IssueType.values());
+    }
+
+    public PDFReporter setIssueTypes(List<String> types) {
+        if (this.issueTypes == null) {
+            issueTypes = new ArrayList<>();
+        }
+        issueTypes.clear();
+        issueTypes.addAll(types);
+        return this;
     }
 
 

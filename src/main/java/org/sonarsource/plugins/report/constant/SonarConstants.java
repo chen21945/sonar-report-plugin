@@ -39,6 +39,16 @@ public class SonarConstants {
             this.key = key;
         }
 
+
+        public static IssueType get(String key) {
+            for (IssueType type : IssueType.values()) {
+                if (type.getKey().equalsIgnoreCase(key)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
     }
 
 }

@@ -13,6 +13,7 @@ public class ReportWebService implements WebService {
         final NewController controller = context.createController(ReportConfig.WSConfig.API_REPORTS);
         NewAction action = controller.createAction("pdf").setHandler(new ReportHandler());
         action.createParam("key").setRequired(true);
+        action.createParam("types").setRequired(false);
         controller.done();
     }
 }

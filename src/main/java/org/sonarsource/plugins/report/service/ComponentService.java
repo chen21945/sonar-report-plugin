@@ -8,10 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.sonarsource.plugins.report.constant.ReportConfig;
 import org.sonarsource.plugins.report.dto.AnalysisDto;
 import org.sonarsource.plugins.report.dto.IssueDto;
-import org.sonarsource.plugins.report.model.Analysis;
-import org.sonarsource.plugins.report.model.Component;
-import org.sonarsource.plugins.report.model.Measure;
-import org.sonarsource.plugins.report.model.Project;
+import org.sonarsource.plugins.report.model.*;
 import org.sonarsource.plugins.report.support.RequestManager;
 import org.sonarsource.plugins.report.support.exception.ReportException;
 
@@ -109,7 +106,16 @@ public class ComponentService extends BaseService {
         return Collections.emptyList();
     }
 
-    public IssueDto getIssues(String projectKey, List<String> facets, List<String> types, int pageSize, int pageIndex) {
+    public List<Facet> getFacets(String projectKey, List<String> facets, List<String> types) {
+        IssueDto dto = getIssueDto(projectKey, facets, types, 1, 1);
+        if (dto != null) {
+            return dto.getFacets();
+        }
+        return Collections.emptyList();
+    }
+
+
+    public IssueDto getIssueDto(String projectKey, List<String> facets, List<String> types, int pageSize, int pageIndex) {
         if (StringUtils.isBlank(projectKey)) {
             return null;
         }

@@ -28,11 +28,6 @@ public class Project {
 
     private Map<SonarConstants.IssueType, List<Issue>> issueMap = new HashMap<>();
     private Map<SonarConstants.IssueType, List<Facet.FacetValue>> severityMap = new HashMap<>();
-//    private List<Component> components;
-//    private List<Rule> rules;
-//    private List<Facet.FacetValue> severities;
-//    private List<Facet.FacetValue> issueTypes;
-//    private List<Facet.FacetValue> languages;
 
     public Measure getMeasure(MetricKeys metricKey) {
         if (metricKey == null) {

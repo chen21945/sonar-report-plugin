@@ -24,27 +24,21 @@ window.registerExtension('reports/report_page_4_project', function (options) {
                 document.querySelector('#generation').onclick = function () {
                     // lock the form
                     setEnabled(false);
+
+                    var types = getIssueTypes();
                     window.SonarRequest.request('/api/reports/pdf')
-                        .setMethod('POST')
-                        .setData({key: options.component.key})
+                        .setMethod('GET')
+                        .setData({key: options.component.key, types: types})
                         .submit()
                         .then(function (value) {
-                            return value.blob();
-                        })
-                        .then(function (blob) {
-                            var reader = new FileReader();
-                            // 转换为base64，可以直接放入href
-                            reader.readAsDataURL(blob);
-                            reader.onload = function (e) {
-                                // 转换完成，创建一个a标签用于下载
-                                var a = document.createElement('a');
-                                a.download = options.component.key + '.pdf';
-                                a.href = e.target.result;
-                                options.el.appendChild(a);
-                                a.click();
-                                a.remove();
-                            };
-                            // on success log generation
+                            var blob = value.blob();
+                            var url = URL.createObjectURL(blob);
+                            var a = document.createElement('a');
+                            a.download = options.component.key + '.pdf';
+                            a.href = url;
+                            options.el.appendChild(a);
+                            a.click();
+                            a.remove();
                             console.log("generate PDF success \n");
                             setEnabled(true);
                         }).catch(function (error) {
@@ -53,8 +47,6 @@ window.registerExtension('reports/report_page_4_project', function (options) {
                         setEnabled(true);
                     });
                 };
-                //fill out project's drop down list
-                // initProfilesDropDownList();
             });
         }
     });
@@ -79,26 +71,13 @@ window.registerExtension('reports/report_page_4_project', function (options) {
         }
     };
 
-    var initProfilesDropDownList = function () {
-        window.SonarRequest.getJSON(
-            '/api/qualityprofiles/search'
-        ).then(function (response) {
-            // on success
-            // we put each quality gate in the list
-            $.each(response.profiles, function (i, item) {
-                // we create a new option for each quality gate
-                // in the json response
-                var option = $('<option>', {
-                    value: item.key,
-                    text: item.name + ' [' + item.key + ']'
-                });
-                // we add it to the drop down list
-                $('#key').append(option);
-            });
-        }).catch(function (response) {
-            // log error
-            console.log("error:" + response)
-        });
+    var getIssueTypes = function (){
+        var chenked = $("input[type='checkbox']:checked").val([]);
+        var types = "";
+        for (var i = 0; i < chenked.length; i++) {
+            types += chenked[i].value + ",";
+        }
+        return types;
     };
 
     // return a function, which is called when the pages is being closed

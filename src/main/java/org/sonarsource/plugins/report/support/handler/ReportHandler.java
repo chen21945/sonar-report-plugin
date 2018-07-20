@@ -1,6 +1,7 @@
 package org.sonarsource.plugins.report.support.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.RequestHandler;
 import org.sonar.api.server.ws.Response;
@@ -8,6 +9,8 @@ import org.sonarsource.plugins.report.support.pdf.PDFReporter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * report controller action
@@ -18,14 +21,18 @@ public class ReportHandler implements RequestHandler {
     @Override
     public void handle(Request request, Response response) throws Exception {
         log.info("report controller begin");
-        log.info("path={}", request.getPath());
         String projectKey = request.mandatoryParam("key");
-        log.info("key ={} ", projectKey);
+        String issueTypes = request.hasParam("types") ? request.getParam("types").getValue() : null;
+        log.info("key ={},issueTypes={} ", projectKey, issueTypes);
 
         PDFReporter reporter = new PDFReporter(projectKey);
+        if (StringUtils.isNotBlank(issueTypes)) {
+            reporter.setIssueTypes(Arrays.asList(issueTypes.split(",")));
+        }
+
         ByteArrayOutputStream stream = reporter.getReport();
-        log.info("get report success");
-        response.stream().setMediaType("application/octet-stream");
+
+        response.stream().setMediaType("application/pdf");
         response.setHeader("Content-Disposition",
                 "attachment;filename=\"" + reporter.project().getName() + "_" + reporter.project().getVersion() + ".pdf\"");
         OutputStream output = response.stream().output();

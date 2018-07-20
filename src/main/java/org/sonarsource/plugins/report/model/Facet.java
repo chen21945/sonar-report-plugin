@@ -2,6 +2,7 @@ package org.sonarsource.plugins.report.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.sonarsource.plugins.report.constant.SonarConstants;
 
 import java.util.List;
 
@@ -16,8 +17,8 @@ public class Facet {
     @Getter
     @Setter
     public class FacetValue {
-        private String key;
-        private Integer value;
+        private SonarConstants.Severity val;
+        private Integer count;
     }
 
 

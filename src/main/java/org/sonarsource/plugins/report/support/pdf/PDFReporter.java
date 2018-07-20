@@ -12,6 +12,7 @@ import com.itextpdf.kernel.pdf.PdfName;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.GrooveBorder;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.property.*;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +68,7 @@ public class PDFReporter {
                 .setFont(PdfFontFactory.createFont(Style.microsoftYaHei(), PdfEncodings.IDENTITY_H, true))
                 .setFontSize(12)
                 .setFontColor(ColorConstants.DARK_GRAY)
-                .setMargins(headerFooter.getHeight() + 20, 36, 36, 36);
+                .setMargins(headerFooter.getHeight() + Style.MARGIN_LEFT, 36, 36, 36);
 
         printFrontPage(document);
 
@@ -148,8 +149,8 @@ public class PDFReporter {
         document.add(Style.chapterLevel2().add(PropertyUtils.get(ReportTexts.GENERAL_STATIC_ANALYSIS)));
         Table table = new Table(3)
                 .setBorder(Border.NO_BORDER)
-                .setMarginLeft(20)
-                .setMarginRight(20)
+                .setMarginLeft(Style.MARGIN_LEFT)
+                .setMarginRight(Style.MARGIN_LEFT)
                 .setTextAlignment(TextAlignment.CENTER)
                 .setHorizontalAlignment(HorizontalAlignment.CENTER)
                 .setWidth(UnitValue.createPercentValue(100))
@@ -216,6 +217,7 @@ public class PDFReporter {
 
 
     private void printQualityGate(Document document) {
+        PageSize pageSize = document.getPdfDocument().getDefaultPageSize();
         //qualityGate
         document.add(Style.text()
                 .add(PropertyUtils.get(ReportTexts.GENERAL_ALERT_STATUS))
@@ -234,16 +236,16 @@ public class PDFReporter {
             return;
         }
         int columns = errors.size() > 4 ? 4 : errors.size();
+        float cellWidth = (pageSize.getWidth() - document.getLeftMargin() - document.getRightMargin() - Style.MARGIN_LEFT) / 4;
         Table table = new Table(columns)
                 .setTextAlignment(TextAlignment.CENTER)
-                .setHorizontalAlignment(HorizontalAlignment.CENTER)
-                .setWidth(UnitValue.createPercentValue(100))
-                .setMarginLeft(20);
+                .setHorizontalAlignment(HorizontalAlignment.LEFT)
+                .setMarginLeft(Style.MARGIN_LEFT);
         errors.forEach(condition -> {
             String value = condition.getActual();
             MetricKeys metricKeys = MetricKeys.get(condition.getMetric());
             String metricName = metricKeys != null ? PropertyUtils.get(metricKeys.getDesc()) : condition.getMetric();
-            Cell cell = Style.metricCellBordered(value, metricName);
+            Cell cell = Style.metricCellBordered(value, metricName).setWidth(cellWidth);
             Paragraph paragraph = Style.smallText().add("is greater than ").add(condition.getError());
             cell.add(paragraph);
             table.addCell(cell);
@@ -259,7 +261,7 @@ public class PDFReporter {
                 .setTextAlignment(TextAlignment.CENTER)
                 .setHorizontalAlignment(HorizontalAlignment.CENTER)
                 .setWidth(UnitValue.createPercentValue(100))
-                .setMarginLeft(20)
+                .setMarginLeft(Style.MARGIN_LEFT)
                 .setFixedLayout();
         List<MetricKeys> metricKeys = Arrays.asList(
                 MetricKeys.BUGS, MetricKeys.SECURITY,
@@ -286,7 +288,7 @@ public class PDFReporter {
                 .setTextAlignment(TextAlignment.CENTER)
                 .setHorizontalAlignment(HorizontalAlignment.CENTER)
                 .setWidth(UnitValue.createPercentValue(100))
-                .setMarginLeft(20)
+                .setMarginLeft(Style.MARGIN_LEFT)
                 .setFixedLayout();
         List<MetricKeys> metricKeys = Arrays.asList(
                 MetricKeys.BLOCKER_VIOLATIONS, MetricKeys.CRITICAL_VIOLATIONS,
@@ -338,9 +340,29 @@ public class PDFReporter {
             }
             //issue type
             Paragraph header = Style.chapterLevel2().add(PropertyUtils.get(typeStr));
-            List<Facet.FacetValue> facetValues = project.getSeverityMap().get(type);
-            //TODO
-            document.add(header);
+            //issue type severity
+            List<Facet.FacetValue> severities = project.getSeverityMap().get(type);
+            severities = PDFUtils.sortSeverity(severities);
+            Table severityTable = new Table(severities.size())
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                    .setVerticalAlignment(VerticalAlignment.BOTTOM)
+                    .setWidth(UnitValue.createPercentValue(80))
+                    .setFixedLayout()
+                    .setMarginLeft(50);
+            for (Facet.FacetValue value : severities) {
+                Cell cell = new Cell().setBorder(Border.NO_BORDER).setBorderRight(new GrooveBorder(0.1F));
+                Paragraph valueP = Style.tableText()
+                        .add(getSeverityImg(value.getVal()))
+                        .add(PropertyUtils.get(PDFUtils.getSeverityText(value.getVal())))
+                        .add(" : ")
+                        .add(new Text(String.valueOf(value.getCount())).setFontColor(Style.MyColor.COLOR_STEEL_BLUE));
+                cell.add(valueP);
+                severityTable.addCell(cell);
+            }
+            document.add(header.add(severityTable));
+
+            //issue details
             Table table = null;
             String file = "";
 
@@ -366,7 +388,7 @@ public class PDFReporter {
                                 .add(" ")
                                 .add(PropertyUtils.get(PDFUtils.getSeverityText(issue.getSeverity())))));
                 table.addCell(Style.issueCell().add(Style.tableText().add(issue.getMessage())));
-                table.addCell(Style.issueCell().add(Style.tableText().add(String.valueOf(issue.getLine()))));
+                table.addCell(Style.issueCell().add(Style.tableText().add(PDFUtils.lineStr(issue.getLine()))));
             }
             if (table != null) {
                 document.add(table);

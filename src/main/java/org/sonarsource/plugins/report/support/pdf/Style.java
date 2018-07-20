@@ -162,5 +162,7 @@ public class Style {
         public static final Color COLOR_SLATE_GREY = new DeviceRgb(198, 226, 255);
     }
 
+    public static final float MARGIN_LEFT = 20f;
+
 
 }

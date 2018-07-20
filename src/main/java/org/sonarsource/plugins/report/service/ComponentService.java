@@ -127,8 +127,7 @@ public class ComponentService extends BaseService {
         params.put("p", pageIndex);
         params.put("ps", pageSize);
         params.put("facets", facetStr);
-        params.put("s", "SEVERITY");
-        params.put("asc", false);
+        params.put("s", "FILE_LINE");
         params.put("types", typeStr);
         String url = getUrl(ReportConfig.WSConfig.API_ISSUES_SEARCH, params);
 

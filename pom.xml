@@ -32,13 +32,6 @@
             <version>${sonar.apiVersion}</version>
             <scope>compile</scope>
         </dependency>
-        <!-- unit tests -->
-        <dependency>
-            <groupId>org.sonarsource.sonarqube</groupId>
-            <artifactId>sonar-testing-harness</artifactId>
-            <version>${sonar.apiVersion}</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>

@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class PDFTest {
 
@@ -38,6 +39,7 @@ public class PDFTest {
     @Test
     public void getReportTest() throws ReportException, IOException {
         PDFReporter reporter = new PDFReporter("SVW.LRC");
+        reporter.setIssueTypes(Arrays.asList("CODE_SMELL".split(",")));
         ByteArrayOutputStream baos = reporter.getReport();
         FileOutputStream fos = new FileOutputStream("C:/Users/yangchengang2.CNSVWSH00/desktop/report_pdf_test.pdf");
         baos.writeTo(fos);
@@ -61,6 +63,7 @@ public class PDFTest {
 
     public static void main(String[] args) {
         System.out.println(PropertyUtils.class.getResourceAsStream("/report-texts.properties"));
+
     }
 
 }

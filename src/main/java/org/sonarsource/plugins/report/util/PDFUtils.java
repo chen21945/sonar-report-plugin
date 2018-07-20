@@ -4,7 +4,12 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import org.sonarsource.plugins.report.constant.ReportTexts;
 import org.sonarsource.plugins.report.constant.SonarConstants;
+import org.sonarsource.plugins.report.model.Facet;
 import org.sonarsource.plugins.report.support.pdf.Style;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PDFUtils {
 
@@ -55,5 +60,25 @@ public class PDFUtils {
                 .setBackgroundColor(Style.MyColor.COLOR_SLATE_GREY)
                 .add(path)
                 .add(new Text(name).setBold());
+    }
+
+    public static String lineStr(Integer line) {
+        return line == null ? "" : "L" + line;
+    }
+
+    public static List<Facet.FacetValue> sortSeverity(List<Facet.FacetValue> severities) {
+        List<SonarConstants.Severity> sorted = Arrays.asList(
+                SonarConstants.Severity.BLOCKER, SonarConstants.Severity.CRITICAL, SonarConstants.Severity.MAJOR,
+                SonarConstants.Severity.MINOR, SonarConstants.Severity.INFO);
+        List<Facet.FacetValue> sortedSeverity = new ArrayList<>();
+        for (SonarConstants.Severity severity : sorted) {
+            for (Facet.FacetValue value : severities) {
+                if (severity.equals(value.getVal())) {
+                    sortedSeverity.add(value);
+                    break;
+                }
+            }
+        }
+        return sortedSeverity;
     }
 }

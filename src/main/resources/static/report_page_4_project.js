@@ -31,8 +31,10 @@ window.registerExtension('reports/report_page_4_project', function (options) {
                         .setData({key: options.component.key, types: types})
                         .submit()
                         .then(function (value) {
-                            var blob = value.blob();
-                            var url = URL.createObjectURL(blob);
+                            return value.blob();
+                        })
+                        .then(function (blob) {
+                            var url = window.URL.createObjectURL(blob);
                             var a = document.createElement('a');
                             a.download = options.component.key + '.pdf';
                             a.href = url;
@@ -71,7 +73,7 @@ window.registerExtension('reports/report_page_4_project', function (options) {
         }
     };
 
-    var getIssueTypes = function (){
+    var getIssueTypes = function () {
         var chenked = $("input[type='checkbox']:checked").val([]);
         var types = "";
         for (var i = 0; i < chenked.length; i++) {

@@ -2,56 +2,47 @@ window.registerExtension('reports/report_page_4_project', function (options) {
 
     // let's create a flag telling if the pages is still displayed
     var isDisplayed = true;
-    console.log(options);
 
-    // then do a Web API call to the /api/issues/search to get the number of issues
-    // we pass `resolved: false` to request only unresolved issues
-    // and `componentKeys: options.component.key` to request issues of the given project
-    window.SonarRequest.getJSON('/api/issues/search', {
-        resolved: false,
-        componentKeys: options.component.key
-    }).then(function (response) {
+    if (isDisplayed) {
+        //add page content
+        var template = document.createElement("div");
+        template.setAttribute("id", "template");
+        options.el.appendChild(template);
 
-        if (isDisplayed) {
+        $('#template').load("/static/reports/pages/report.html", function () {
+            //button function
+            document.querySelector('#generation').onclick = function () {
+                // lock the form
+                setEnabled(false);
+                //get selected types
+                var types = getIssueTypes();
 
-            console.log(options.component.key);
-
-            var template = document.createElement("div");
-            template.setAttribute("id", "template");
-            options.el.appendChild(template);
-
-            $('#template').load("/static/reports/pages/report.html", function () {
-                document.querySelector('#generation').onclick = function () {
-                    // lock the form
-                    setEnabled(false);
-
-                    var types = getIssueTypes();
-                    window.SonarRequest.request('/api/reports/pdf')
-                        .setMethod('GET')
-                        .setData({key: options.component.key, types: types})
-                        .submit()
-                        .then(function (value) {
-                            return value.blob();
-                        })
-                        .then(function (blob) {
-                            var url = window.URL.createObjectURL(blob);
-                            var a = document.createElement('a');
-                            a.download = options.component.key + '.pdf';
-                            a.href = url;
-                            options.el.appendChild(a);
-                            a.click();
-                            a.remove();
-                            console.log("generate PDF success \n");
-                            setEnabled(true);
-                        }).catch(function (error) {
-                        // log error
-                        console.log("[ERROR] Export failed." + error);
+                window.SonarRequest.request('/api/reports/pdf')
+                    .setMethod('GET')
+                    .setData({key: options.component.key, types: types})
+                    .submit()
+                    .then(function (value) {
+                        return value.blob();
+                    })
+                    .then(function (blob) {
+                        var url = window.URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.download = options.component.key + '.pdf';
+                        a.href = url;
+                        options.el.appendChild(a);
+                        a.click();
+                        a.remove();
+                        console.log("Generate PDF success \n");
                         setEnabled(true);
-                    });
-                };
-            });
-        }
-    });
+                    }).catch(function (error) {
+                    // log error
+                    console.log("[ERROR] Export failed." + error);
+                    setEnabled(true);
+                });
+            };
+        });
+    }
+
 
     var setEnabled = function (isEnabled) {
         // retrieve the form
@@ -74,12 +65,12 @@ window.registerExtension('reports/report_page_4_project', function (options) {
     };
 
     var getIssueTypes = function () {
-        var chenked = $("input[type='checkbox']:checked").val([]);
+        //get all selected checkbox value and splice then with ","
         var types = "";
-        for (var i = 0; i < chenked.length; i++) {
-            types += chenked[i].value + ",";
-        }
-        return types;
+        $("input[type='checkbox']:checked").each(function (index, item) {
+            types += $(this).val() + ",";
+        });
+        return types.length > 0 ? types.substr(0, types.length - 1) : types;
     };
 
     // return a function, which is called when the pages is being closed

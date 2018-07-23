@@ -1,32 +1,31 @@
 <div id="bd" class="page-wrapper-simple">
-    <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">
-        <div>
-            <h1 class="maintenance-title text-center">Export PDF Report</h1>
-            <form id="generation-form">
-                <div class="big-spacer-bottom">
-                    <label class="big-spacer-right">Issue Type: </label>
-                    <label class="big-spacer-right">
-                        <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Bug" checked="checked"/>
-                        Bug
-                    </label>
-                    <label class="big-spacer-right">
-                        <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Vulnerability" checked="checked"/>
-                        Vulnerability
-                    </label>
-                    <label class="big-spacer-right">
-                        <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Code_Smell"/>
-                        Code Smell
-                    </label>
+    <div id="nonav" class="page-simple text-center" style="width:100%; margin-left: 10%; margin-right: 10%;">
+        <h1 class="maintenance-title">Export PDF Report</h1>
+        <form id="generation-form">
+            <div class="big-spacer-bottom">
+                <label class="big-spacer-right">Issue Type: </label>
+                <label class="big-spacer-right">
+                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Bug" checked="checked"/>
+                    Bug
+                </label>
+                <label class="big-spacer-right">
+                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Vulnerability"
+                           checked="checked"/>
+                    Vulnerability
+                </label>
+                <label class="big-spacer-right">
+                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Code_Smell"/>
+                    Code Smell
+                </label>
+            </div>
+            <div class="big-spacer-top big-spacer-bottom">
+                <div id="loading" class="overflow-hidden" style="margin-bottom: 1em; display: none;">
+                    <img src="/static/reports/img/loader.gif" alt="Working..."/>
                 </div>
-                <div class="big-spacer-top big-spacer-bottom">
-                    <div id="loading" class="text-center overflow-hidden" style="margin-bottom: 1em; display: none;">
-                        <img src="/static/reports/img/loader.gif" alt="Working..."/>
-                    </div>
-                    <div class="text-center overflow-hidden">
-                        <input id="generation" name="generation" type="button" value="Export">
-                    </div>
+                <div class="overflow-hidden">
+                    <input id="generation" name="generation" type="button" value="Export">
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>

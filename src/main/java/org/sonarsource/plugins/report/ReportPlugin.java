@@ -44,21 +44,21 @@ public class ReportPlugin implements Plugin {
         // tutorial on web extensions
         context.addExtension(ReportPageDefinition.class);
 
-        context.addExtensions(Arrays.asList(
-                PropertyDefinition.builder(ReportConfig.ENABLED)
-                        .name("Enabled")
-                        .description("Whether to automatically generate PDF report")
-                        .category(Categorys.PDF_REPORT.getCode())
-                        .type(PropertyType.BOOLEAN)
-                        .defaultValue("true")
-                        .build(),
-                PropertyDefinition.builder(ReportConfig.FILE_TYPE)
-                        .name("File Type")
-                        .description("the file type to generate")
-                        .category(Categorys.PDF_REPORT.getCode())
-                        .type(PropertyType.SINGLE_SELECT_LIST)
-                        .options("pdf", "excel")
-                        .defaultValue("pdf")
-                        .build()));
+//        context.addExtensions(Arrays.asList(
+//                PropertyDefinition.builder(ReportConfig.ENABLED)
+//                        .name("Enabled")
+//                        .description("Whether to automatically generate PDF report")
+//                        .category(Categorys.PDF_REPORT.getCode())
+//                        .type(PropertyType.BOOLEAN)
+//                        .defaultValue("true")
+//                        .build(),
+//                PropertyDefinition.builder(ReportConfig.FILE_TYPE)
+//                        .name("File Type")
+//                        .description("the file type to generate")
+//                        .category(Categorys.PDF_REPORT.getCode())
+//                        .type(PropertyType.SINGLE_SELECT_LIST)
+//                        .options("pdf", "excel")
+//                        .defaultValue("pdf")
+//                        .build()));
     }
 }

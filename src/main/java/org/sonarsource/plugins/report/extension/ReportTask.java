@@ -29,6 +29,7 @@ import org.sonarsource.plugins.report.constant.ReportConfig;
 
 /**
  * 报表任务扩展
+ * 暂时没用
  *
  * after the scanner sends the raw report to Compute Engine and  Compute Engine finishes analysis.
  */
@@ -52,7 +53,6 @@ public class ReportTask implements PostProjectAnalysisTask {
             log.info("can not get project info, stop report task.");
         }
 
-//        ReportGenerator generator = new ReportGenerator();
         log.info("server info, server={}", JSON.toJSONString(server));
 
 

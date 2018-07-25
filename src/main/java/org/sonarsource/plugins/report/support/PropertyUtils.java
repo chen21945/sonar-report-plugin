@@ -11,7 +11,7 @@ import java.util.Properties;
 @Slf4j
 public class PropertyUtils {
 
-    public static Properties properties;
+    private static Properties properties;
 
     static {
         try {

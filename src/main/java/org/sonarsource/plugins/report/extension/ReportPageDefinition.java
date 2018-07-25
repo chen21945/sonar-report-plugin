@@ -16,7 +16,7 @@ public class ReportPageDefinition implements PageDefinition {
     @Override
     public void define(Context context) {
         context.addPage(Page.builder("reports/report_page_4_project")
-                .setName("PDFReporter")
+                .setName("PDF Report")
                 .setScope(Scope.COMPONENT).build());
     }
 }

@@ -42,9 +42,9 @@ public class HeaderFooter implements IEventHandler {
 
     private Document document;
 
-    private URL sonarLogo;
+    private URL rightLogo;
     private String projectNm;
-    private URL svwLogo;
+    private URL leftLogo;
     private PdfFont font;
     private float height = 56;
 
@@ -70,18 +70,20 @@ public class HeaderFooter implements IEventHandler {
 
         font = PdfFontFactory.createFont(Style.commonFont(), PdfEncodings.IDENTITY_H, true);
         //header
-        canvas.addImage(ImageDataFactory.create(svwLogo),
-                pageSize.getX() + document.getLeftMargin(),
-                pageSize.getTop() - height,
-                width,
-                false);
+        if (leftLogo != null) {
+            canvas.addImage(ImageDataFactory.create(leftLogo),
+                    pageSize.getX() + document.getLeftMargin(),
+                    pageSize.getTop() - height,
+                    width,
+                    false);
+        }
         canvas.beginText()
                 .setFillColor(ColorConstants.GRAY)
                 .moveText(pageSize.getX() + document.getLeftMargin() + 2 * width - this.projectNm.length() * 5, pageSize.getTop() - height + 5)
                 .setFontAndSize(font, 22)
                 .showText(this.projectNm)
                 .endText();
-        canvas.addImage(ImageDataFactory.create(sonarLogo),
+        canvas.addImage(ImageDataFactory.create(rightLogo),
                 pageSize.getX() + document.getLeftMargin() + width * 3,
                 pageSize.getTop() - height,
                 width,
@@ -101,8 +103,8 @@ public class HeaderFooter implements IEventHandler {
     }
 
 
-    public HeaderFooter setSonarLogo(URL sonarLogo) {
-        this.sonarLogo = sonarLogo;
+    public HeaderFooter setRightLogo(URL rightLogo) {
+        this.rightLogo = rightLogo;
         return this;
     }
 
@@ -111,8 +113,8 @@ public class HeaderFooter implements IEventHandler {
         return this;
     }
 
-    public HeaderFooter setSvwLogo(URL svwLogo) {
-        this.svwLogo = svwLogo;
+    public HeaderFooter setLeftLogo(URL leftLogo) {
+        this.leftLogo = leftLogo;
         return this;
     }
 

@@ -4,7 +4,11 @@ SonarQube Report Plugin
 * 2018-7 支持sonarqube v6.7，v6.3及以下版本不支持
 * 插件以web page形式呈现，在每个项目的菜单栏增加PDF Report页，可选择期望导出的Issue类型和严重程度，导出为PDF文件。
 * 使用itext7作为PDF组件
+
+使用须知
 * 使用时需要修改/constant/WSConfig中的HOST_URL，此处将端口改为80
+* resources/static/img中包含作者公司logo，需要自行修改
+* 默认使用思源黑体
 
 
 

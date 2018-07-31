@@ -59,8 +59,8 @@ public class PDFReporter {
 
         //header footer
         HeaderFooter headerFooter = new HeaderFooter(document)
-                .setSonarLogo(getLogo())
-                .setSvwLogo(getSvwLogo())
+                .setRightLogo(getRightLogo())
+                .setLeftLogo(getLeftLogo())
                 .setProjectNm(this.getProject().getName());
         pdf.addEventHandler(PdfDocumentEvent.END_PAGE, headerFooter);
 
@@ -91,7 +91,7 @@ public class PDFReporter {
     private void printFrontPage(Document document) throws ReportException {
         log.info("printing front page");
         //首页logo
-        Image image = new Image(ImageDataFactory.create(getLogo()))
+        Image image = new Image(ImageDataFactory.create(getRightLogo()))
                 .setWidth(document.getPdfDocument().getDefaultPageSize().getWidth() * 2 / 3)
                 .setFixedPosition(114, 542);
         document.add(image);
@@ -398,11 +398,11 @@ public class PDFReporter {
     }
 
 
-    private URL getLogo() {
+    private URL getRightLogo() {
         return this.getClass().getResource("/static/img/sonarqube.png");
     }
 
-    private URL getSvwLogo() {
+    private URL getLeftLogo() {
         return this.getClass().getResource("/static/img/svw.png");
     }
 

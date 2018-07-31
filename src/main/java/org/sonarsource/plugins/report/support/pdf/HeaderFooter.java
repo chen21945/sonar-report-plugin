@@ -68,7 +68,7 @@ public class HeaderFooter implements IEventHandler {
         float width = (pageSize.getWidth() - document.getLeftMargin() - document.getRightMargin()) / 4;
         PdfCanvas canvas = new PdfCanvas(page.newContentStreamBefore(), page.getResources(), pdfDoc);
 
-        font = PdfFontFactory.createFont(Style.microsoftYaHei(), PdfEncodings.IDENTITY_H, true);
+        font = PdfFontFactory.createFont(Style.commonFont(), PdfEncodings.IDENTITY_H, true);
         //header
         canvas.addImage(ImageDataFactory.create(svwLogo),
                 pageSize.getX() + document.getLeftMargin(),

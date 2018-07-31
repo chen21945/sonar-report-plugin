@@ -9,7 +9,6 @@ import org.sonarsource.plugins.report.support.pdf.PDFReporter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -20,16 +19,18 @@ public class ReportHandler implements RequestHandler {
 
     @Override
     public void handle(Request request, Response response) throws Exception {
-        log.info("report controller begin");
         String projectKey = request.mandatoryParam("key");
         String issueTypes = request.hasParam("types") ? request.getParam("types").getValue() : null;
-        log.info("key ={},issueTypes={} ", projectKey, issueTypes);
+        String severityTypes = request.hasParam("severities") ? request.getParam("severities").getValue() : null;
+        log.info("report controller begin， key ={},issueTypes={},severities={} ", projectKey, issueTypes, severityTypes);
 
         PDFReporter reporter = new PDFReporter(projectKey);
-        if (StringUtils.isNotBlank(issueTypes)) {
+        if(StringUtils.isNotBlank(issueTypes)){
             reporter.setIssueTypes(Arrays.asList(issueTypes.split(",")));
         }
-
+        if(StringUtils.isNotBlank(severityTypes)){
+            reporter.setSeverityTypes(Arrays.asList(severityTypes.split(",")));
+        }
         ByteArrayOutputStream stream = reporter.getReport();
 
         response.stream().setMediaType("application/pdf");

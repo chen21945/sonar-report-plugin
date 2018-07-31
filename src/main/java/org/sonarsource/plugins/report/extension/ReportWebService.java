@@ -14,6 +14,7 @@ public class ReportWebService implements WebService {
         NewAction action = controller.createAction("pdf").setHandler(new ReportHandler());
         action.createParam("key").setRequired(true);
         action.createParam("types").setRequired(false);
+        action.createParam("severities").setRequired(false);
         controller.done();
     }
 }

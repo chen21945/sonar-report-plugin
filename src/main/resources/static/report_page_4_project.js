@@ -16,10 +16,11 @@ window.registerExtension('reports/report_page_4_project', function (options) {
                 setEnabled(false);
                 //get selected types
                 var types = getIssueTypes();
+                var severities = getSeverities();
 
                 window.SonarRequest.request('/api/reports/pdf')
                     .setMethod('GET')
-                    .setData({key: options.component.key, types: types})
+                    .setData({key: options.component.key, types: types, severities: severities})
                     .submit()
                     .then(function (value) {
                         return value.blob();
@@ -67,7 +68,16 @@ window.registerExtension('reports/report_page_4_project', function (options) {
     var getIssueTypes = function () {
         //get all selected checkbox value and splice then with ","
         var types = "";
-        $("input[type='checkbox']:checked").each(function (index, item) {
+        $("#itype-div input[type='checkbox']:checked").each(function (index, item) {
+            types += $(this).val() + ",";
+        });
+        return types.length > 0 ? types.substr(0, types.length - 1) : types;
+    };
+
+    var getSeverities = function () {
+        //get all selected checkbox value and splice then with ","
+        var types = "";
+        $("#severity-div input[type='checkbox']:checked").each(function (index, item) {
             types += $(this).val() + ",";
         });
         return types.length > 0 ? types.substr(0, types.length - 1) : types;

@@ -38,7 +38,7 @@ public class TableOfContents {
         PdfDocument pdf = new PdfDocument(new PdfWriter(dest));
         pdf.getCatalog().setPageMode(PdfName.UseOutlines);
 
-        PdfFont font = PdfFontFactory.createFont(Style.FontType.MICROSOFT_YAHEI, PdfEncodings.IDENTITY_H, true);
+        PdfFont font = PdfFontFactory.createFont(Style.FontType.SOURCE_HAN_SANS, PdfEncodings.IDENTITY_H, true);
         PdfFont bold = PdfFontFactory.createFont("STSongStd-Light", "UniGB-UCS2-H", true);
 
         Document document = new Document(pdf);

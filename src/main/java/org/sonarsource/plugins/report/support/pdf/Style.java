@@ -39,36 +39,36 @@ import java.io.IOException;
 public class Style {
 
     public class FontType {
-        public static final String MICROSOFT_YAHEI = "/static/font/MicrosoftYaHei.ttf";
+        public static final String SOURCE_HAN_SANS = "/static/font/SourceHanSansSC-Normal.otf";
 
     }
 
-    private static FontProgram microsoftYaHei;
+    private static FontProgram commonFont;
     private static FontProgram stSong;
 
-    public static FontProgram microsoftYaHei() {
-        if (microsoftYaHei == null) {
+    public static FontProgram commonFont() {
+        if (commonFont == null) {
             try {
-                microsoftYaHei = FontProgramFactory.createFont(FontType.MICROSOFT_YAHEI);
+                commonFont = FontProgramFactory.createFont(FontType.SOURCE_HAN_SANS);
             } catch (IOException e) {
-                log.error("load microsoft YaHei font failed", e);
-                throw new ReportException("load  microsoft YaHei font failed");
+                log.error("load source han sans font failed", e);
+                throw new ReportException("load source han sans font failed");
             }
         }
-        return microsoftYaHei;
+        return commonFont;
     }
-//
-//    public static PdfFont stSong() {
-//        if (stSong == null) {
-//            try {
-//                stSong = PdfFontFactory.createFont("STSongStd-Light", "UniGB-UCS2-H", true);
-//            } catch (IOException e) {
-//                log.error("load ST-Song font failed", e);
-//                throw new ReportException("load ST-Song font failed ");
-//            }
-//        }
-//        return stSong;
-//    }
+
+    public static FontProgram stSong() {
+        if (stSong == null) {
+            try {
+                stSong = FontProgramFactory.createFont("STSongStd-Light");
+            } catch (IOException e) {
+                log.error("load ST-Song font failed", e);
+                throw new ReportException("load ST-Song font failed ");
+            }
+        }
+        return stSong;
+    }
 
     public static Paragraph chapterLevel1() {
         return new Paragraph()

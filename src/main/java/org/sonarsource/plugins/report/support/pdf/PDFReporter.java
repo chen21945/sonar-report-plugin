@@ -42,6 +42,7 @@ public class PDFReporter {
     private String projectKey;
     private Project project;
     private List<String> issueTypes;
+    private List<String> severityTypes;
 
     public PDFReporter(String projectKey) {
         this.projectKey = projectKey;
@@ -65,7 +66,7 @@ public class PDFReporter {
 
         //文档默认属性
         document.setTextAlignment(TextAlignment.JUSTIFIED)
-                .setFont(PdfFontFactory.createFont(Style.microsoftYaHei(), PdfEncodings.IDENTITY_H, true))
+                .setFont(PdfFontFactory.createFont(Style.commonFont(), PdfEncodings.IDENTITY_H, true))
                 .setFontSize(12)
                 .setFontColor(ColorConstants.DARK_GRAY)
                 .setMargins(headerFooter.getHeight() + Style.MARGIN_LEFT, 36, 36, 36);
@@ -419,8 +420,8 @@ public class PDFReporter {
         if (this.project == null) {
             throw new ReportException("can not get project, key={" + this.projectKey + "}");
         }
-        log.info("transfer to project success, project={}" + JSON.toJSONString(this.project));
         getAnalysisData();
+        log.info("get project analysis data success");
         return this.project;
     }
 
@@ -458,7 +459,7 @@ public class PDFReporter {
             IssueDto issueDto;
             int total;
             do {
-                issueDto = componentService.getIssueDto(this.projectKey, Arrays.asList("severities"), Arrays.asList(type.getKey()), pageSize, ++pageIndex);
+                issueDto = componentService.getIssueDto(this.projectKey, Arrays.asList("severities"), Arrays.asList(type.getKey()), this.severityTypes, pageSize, ++pageIndex);
                 if (issueDto == null || issueDto.getTotal() == null) {
                     break;
                 }
@@ -485,11 +486,26 @@ public class PDFReporter {
     }
 
     public PDFReporter setIssueTypes(List<String> types) {
+        if (types == null || types.size() == 0) {
+            return this;
+        }
         if (this.issueTypes == null) {
             issueTypes = new ArrayList<>();
         }
         issueTypes.clear();
         issueTypes.addAll(types);
+        return this;
+    }
+
+    public PDFReporter setSeverityTypes(List<String> severities) {
+        if (severities == null || severities.size() == 0) {
+            return this;
+        }
+        if (this.severityTypes == null) {
+            severityTypes = new ArrayList<>();
+        }
+        severityTypes.clear();
+        severityTypes.addAll(severities);
         return this;
     }
 

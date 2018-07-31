@@ -1,31 +1,61 @@
 <div id="bd" class="page-wrapper-simple">
     <div id="nonav" class="page-simple text-center" style="width:100%; margin-left: 10%; margin-right: 10%;">
         <h1 class="maintenance-title">Export PDF Report</h1>
-        <form id="generation-form">
-            <div class="big-spacer-bottom">
-                <label class="big-spacer-right">Issue Type: </label>
+        <form id="generation-form" style="display:inline-block;width: 430px;text-align:left">
+            <div class="big-spacer-bottom" id="itype-div">
+                <label class="big-spacer-right" style="display:inline-block;width: 80px;">Issue Type: </label>
                 <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Bug" checked="checked"/>
+                    <input class="icon-checkbox-checked" type="checkbox" name="itype" value="Bug" checked="checked"/>
                     Bug
                 </label>
                 <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Vulnerability"
+                    <input class="icon-checkbox-checked" type="checkbox" name="itype" value="Vulnerability"
                            checked="checked"/>
                     Vulnerability
                 </label>
                 <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Code_Smell"/>
+                    <input class="icon-checkbox-checked" type="checkbox" name="itype" value="Code_Smell"/>
                     Code Smell
                 </label>
             </div>
-            <div class="big-spacer-top big-spacer-bottom">
-                <div id="loading" class="overflow-hidden" style="margin-bottom: 1em; display: none;">
-                    <img src="/static/reports/img/loader.gif" alt="Working..."/>
-                </div>
-                <div class="overflow-hidden">
-                    <input id="generation" name="generation" type="button" value="Export">
-                </div>
+
+            <div class="big-spacer-bottom" id="severity-div">
+                <label class="big-spacer-right" style="display:inline-block;width: 80px;">Severity Type: </label>
+                <label class="big-spacer-right">
+                    <input class="icon-checkbox-checked" type="checkbox" name="severity" value="BLOCKER"
+                           checked="checked"/>
+                    Bloker
+                </label>
+                <label class="big-spacer-right">
+                    <input class="icon-checkbox-checked" type="checkbox" name="severity" value="CRITICAL"
+                           checked="checked"/>
+                    Critical
+                </label>
+                <label class="big-spacer-right">
+                    <input class="icon-checkbox-checked" type="checkbox" name="severity" value="MAJOR"
+                           checked="checked"/>
+                    Major
+                </label>
+                <label class="big-spacer-right">
+                    <input class="icon-checkbox-checked" type="checkbox" name="severity" value="MINOR"
+                           checked="checked"/>
+                    Minor
+                </label>
+                <label class="big-spacer-right">
+                    <input class="icon-checkbox-checked" type="checkbox" name="severity" value="INFO"
+                           checked="checked"/>
+                    Info
+                </label>
             </div>
         </form>
+
+        <div class="big-spacer-top big-spacer-bottom">
+            <div id="loading" class="overflow-hidden" style="margin-bottom: 1em; display: none;">
+                <img src="/static/reports/img/loader.gif" alt="Working..."/>
+            </div>
+            <div class="overflow-hidden">
+                <input id="generation" name="generation" type="button" value="Export">
+            </div>
+        </div>
     </div>
 </div>

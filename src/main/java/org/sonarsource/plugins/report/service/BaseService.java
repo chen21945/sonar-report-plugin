@@ -1,7 +1,7 @@
 package org.sonarsource.plugins.report.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.sonarsource.plugins.report.constant.ReportConfig;
+import org.sonarsource.plugins.report.constant.WSConfig;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ public class BaseService {
         if (StringUtils.isNotBlank(baseUrl)) {
             return baseUrl;
         }
-        return ReportConfig.WSConfig.HOST_URL;
+        return WSConfig.HOST_URL;
     }
 
     public String getUrl(String api, Map<String, Object> params) {

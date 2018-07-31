@@ -20,14 +20,8 @@
 package org.sonarsource.plugins.report;
 
 import org.sonar.api.Plugin;
-import org.sonar.api.PropertyType;
-import org.sonar.api.config.PropertyDefinition;
-import org.sonarsource.plugins.report.constant.Categorys;
-import org.sonarsource.plugins.report.constant.ReportConfig;
 import org.sonarsource.plugins.report.extension.ReportPageDefinition;
 import org.sonarsource.plugins.report.extension.ReportWebService;
-
-import java.util.Arrays;
 
 /**
  * This class is the entry point for all extensions. It is referenced in pom.xml.
@@ -45,14 +39,14 @@ public class ReportPlugin implements Plugin {
         context.addExtension(ReportPageDefinition.class);
 
 //        context.addExtensions(Arrays.asList(
-//                PropertyDefinition.builder(ReportConfig.ENABLED)
+//                PropertyDefinition.builder("sonar.report.enabled")
 //                        .name("Enabled")
 //                        .description("Whether to automatically generate PDF report")
 //                        .category(Categorys.PDF_REPORT.getCode())
 //                        .type(PropertyType.BOOLEAN)
 //                        .defaultValue("true")
 //                        .build(),
-//                PropertyDefinition.builder(ReportConfig.FILE_TYPE)
+//                PropertyDefinition.builder("sonar.report.type")
 //                        .name("File Type")
 //                        .description("the file type to generate")
 //                        .category(Categorys.PDF_REPORT.getCode())

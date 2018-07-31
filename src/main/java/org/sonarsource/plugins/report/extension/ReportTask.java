@@ -25,7 +25,6 @@ import org.sonar.api.ce.posttask.PostProjectAnalysisTask;
 import org.sonar.api.ce.posttask.Project;
 import org.sonar.api.config.Configuration;
 import org.sonar.api.platform.Server;
-import org.sonarsource.plugins.report.constant.ReportConfig;
 
 /**
  * 报表任务扩展
@@ -55,8 +54,6 @@ public class ReportTask implements PostProjectAnalysisTask {
 
         log.info("server info, server={}", JSON.toJSONString(server));
 
-
-        log.info("configuration info, enabled={}, type={} ", config.get(ReportConfig.ENABLED), config.get(ReportConfig.FILE_TYPE));
     }
 }
 

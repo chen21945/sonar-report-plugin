@@ -5,7 +5,6 @@ import org.sonar.api.batch.postjob.PostJob;
 import org.sonar.api.batch.postjob.PostJobContext;
 import org.sonar.api.batch.postjob.PostJobDescriptor;
 import org.sonar.api.config.Configuration;
-import org.sonarsource.plugins.report.constant.ReportConfig;
 
 /**
  * PostJob 报表任务扩展
@@ -24,6 +23,5 @@ public class ReportPostJob implements PostJob {
     public void execute(final PostJobContext postJobContext) {
         log.info("------------------------");
         Configuration config = postJobContext.config();
-        log.info("config info ,type =  :" + config.get(ReportConfig.FILE_TYPE));
     }
 }

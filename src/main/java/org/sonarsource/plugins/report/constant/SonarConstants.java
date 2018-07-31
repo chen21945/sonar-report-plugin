@@ -3,7 +3,6 @@ package org.sonarsource.plugins.report.constant;
 public class SonarConstants {
 
     public static final String QUALITY_GATE_OK = "OK";
-
     public static final String QUALITY_GATE_ERROR = "ERROR";
 
     public enum Severity {

@@ -28,37 +28,7 @@ public enum MetricKeys {
     CRITICAL_VIOLATIONS("critical_violations", ReportTexts.GENERAL_CRITICAL_VIOLATIONS),
     MAJOR_VIOLATIONS("major_violations", ReportTexts.GENERAL_MAJOR_VIOLATIONS),
     MINOR_VIOLATIONS("minor_violations", ReportTexts.GENERAL_MINOR_VIOLATIONS),
-    INFO_VIOLATIONS("info_violations", ReportTexts.GENERAL_INFO_VIOLATIONS)
-
-//    DIRECTORIES("directories"),
-//    DUPLICATED_LINES("duplicated_lines"),
-//    DUPLICATED_BLOCKS("duplicated_blocks"),
-//    DUPLICATED_FILES("duplicated_files"),
-//
-//    PROFILE("quality_profiles"),
-//
-//
-//    TEST_EXECUTION_TIME("test_execution_time"),
-//    SKIPPED_TESTS("skipped_tests"),
-//    TESTS("tests"),
-//    TEST_ERRORS("test_errors"),
-//    TEST_FAILURES("test_failures"),
-//    TEST_SUCCESS_DENSITY("test_success_density"),
-//    VIOLATIONS("violations"),
-//
-
-//
-//    FILE_COMPLEXITY_DISTRIBUTION("file_complexity_distribution"),
-//
-//
-//    TECHNICAL_DEBT("sqale_index"),
-//    RELIABILITY_REMEDIATION_EFFORT("reliability_remediation_effort"),
-//    SECUTITY_REMEDIATION_EFFORT("security_remediation_effort"),
-
-
-//    CLASS_COMPLEXITY("class_complexity",ReportTexts.GENERAL_PER_CLASS),
-//    FUNCTION_COMPLEXITY("function_complexity",ReportTexts.GENERAL_DECISION_POINTS),
-    ;
+    INFO_VIOLATIONS("info_violations", ReportTexts.GENERAL_INFO_VIOLATIONS);
 
     private String key;
     private String desc;

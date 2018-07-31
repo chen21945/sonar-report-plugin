@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.sonarsource.plugins.report.constant.ReportConfig;
+import org.sonarsource.plugins.report.constant.WSConfig;
 import org.sonarsource.plugins.report.dto.AnalysisDto;
 import org.sonarsource.plugins.report.dto.IssueDto;
 import org.sonarsource.plugins.report.model.*;
@@ -36,7 +36,7 @@ public class ComponentService extends BaseService {
         if (StringUtils.isBlank(projectKey)) {
             return null;
         }
-        String url = getUrl(ReportConfig.WSConfig.API_COMPONENTS_SHOW,
+        String url = getUrl(WSConfig.API_COMPONENTS_SHOW,
                 ImmutableMap.of("component", projectKey));
         RequestManager manager = RequestManager.getInstance();
         try {
@@ -61,7 +61,7 @@ public class ComponentService extends BaseService {
             return Collections.emptyList();
         }
         //取最近的一次分析
-        String url = getUrl(ReportConfig.WSConfig.API_ANALYSIS_SEARCH,
+        String url = getUrl(WSConfig.API_ANALYSIS_SEARCH,
                 ImmutableMap.of("project", projectKey,
                         "p", pageIndex,
                         "ps", pageSize));
@@ -87,7 +87,7 @@ public class ComponentService extends BaseService {
             return Collections.emptyList();
         }
         String metricsStr = metrics.stream().collect(Collectors.joining(","));
-        String url = getUrl(ReportConfig.WSConfig.API_MEASURES,
+        String url = getUrl(WSConfig.API_MEASURES,
                 ImmutableMap.of("component", projectKey,
                         "metricKeys", metricsStr));
         JSONObject jsonObject;
@@ -131,7 +131,7 @@ public class ComponentService extends BaseService {
         params.put("s", "FILE_LINE");
         params.put("types", typeStr);
         params.put("severities", severityStr);
-        String url = getUrl(ReportConfig.WSConfig.API_ISSUES_SEARCH, params);
+        String url = getUrl(WSConfig.API_ISSUES_SEARCH, params);
 
         try {
             String result = RequestManager.getInstance().get(url);

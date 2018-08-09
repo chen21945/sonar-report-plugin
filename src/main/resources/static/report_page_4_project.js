@@ -9,18 +9,31 @@ window.registerExtension('reports/report_page_4_project', function (options) {
         template.setAttribute("id", "template");
         options.el.appendChild(template);
 
+        //add css
+        var css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.type = 'text/css';
+        css.href = '/static/reports/css/report.css' + '?t=' + new Date().getTime();
+        document.head.appendChild(css);
+
         $('#template').load("/static/reports/pages/report.html", function () {
             //button function
             document.querySelector('#generation').onclick = function () {
                 // lock the form
                 setEnabled(false);
-                //get selected types
+                //get parameters
                 var types = getIssueTypes();
                 var severities = getSeverities();
+                var sinceLeakPeriod = ifSinceLeakPeriod();
 
                 window.SonarRequest.request('/api/reports/pdf')
                     .setMethod('GET')
-                    .setData({key: options.component.key, types: types, severities: severities})
+                    .setData({
+                        key: options.component.key,
+                        types: types,
+                        severities: severities,
+                        sinceLeakPeriod: sinceLeakPeriod
+                    })
                     .submit()
                     .then(function (value) {
                         return value.blob();
@@ -82,6 +95,11 @@ window.registerExtension('reports/report_page_4_project', function (options) {
         });
         return types.length > 0 ? types.substr(0, types.length - 1) : types;
     };
+
+    var ifSinceLeakPeriod = function () {
+        return $("#onoffswitch").is(":checked");
+    }
+
 
     // return a function, which is called when the pages is being closed
     return function () {

@@ -22,13 +22,14 @@ public class ReportHandler implements RequestHandler {
         String projectKey = request.mandatoryParam("key");
         String issueTypes = request.hasParam("types") ? request.getParam("types").getValue() : null;
         String severityTypes = request.hasParam("severities") ? request.getParam("severities").getValue() : null;
-        log.info("report controller begin， key ={},issueTypes={},severities={} ", projectKey, issueTypes, severityTypes);
+        String sinceLeakPeriod = request.hasParam("sinceLeakPeriod") ? request.getParam("sinceLeakPeriod").getValue() : null;
+        log.info("report controller begin， key ={},issueTypes={},severities={} ,sinceLeakPeriod={}", projectKey, issueTypes, severityTypes, sinceLeakPeriod);
 
-        PDFReporter reporter = new PDFReporter(projectKey);
-        if(StringUtils.isNotBlank(issueTypes)){
+        PDFReporter reporter = new PDFReporter(projectKey).setSinceLeakPeriod(sinceLeakPeriod);
+        if (StringUtils.isNotBlank(issueTypes)) {
             reporter.setIssueTypes(Arrays.asList(issueTypes.split(",")));
         }
-        if(StringUtils.isNotBlank(severityTypes)){
+        if (StringUtils.isNotBlank(severityTypes)) {
             reporter.setSeverityTypes(Arrays.asList(severityTypes.split(",")));
         }
         ByteArrayOutputStream stream = reporter.getReport();

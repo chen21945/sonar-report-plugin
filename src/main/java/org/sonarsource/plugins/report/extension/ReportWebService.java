@@ -15,6 +15,7 @@ public class ReportWebService implements WebService {
         action.createParam("key").setRequired(true);
         action.createParam("types").setRequired(false);
         action.createParam("severities").setRequired(false);
+        action.createParam("sinceLeakPeriod").setRequired(false);
         controller.done();
     }
 }

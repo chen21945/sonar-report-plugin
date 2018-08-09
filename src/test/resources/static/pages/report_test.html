@@ -6,57 +6,193 @@
     <style type="text/css">
         @import url("sonar.3398ab84.css");
     </style>
+
+    <style type="text/css">
+        .title{
+            margin-bottom:40px;
+            line-height:1.5;
+            font-size:24px;
+            font-weight:400;
+            text-align:center
+        }
+        .parameter-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #236a97;
+            margin-right: 16px;
+            width: 110px;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .checkbox-name {
+            font-size: 14px;
+            margin-right: 16px;
+            vertical-align: top;
+        }
+
+        .switch {
+            position: relative;
+            float: none;
+            display: inline-block;
+            width: 55px;
+            margin: 0;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .switch-checkbox {
+            display: none;
+        }
+
+        .switch-label {
+            display: block;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid #999999;
+            border-radius: 20px;
+        }
+
+        .switch-inner {
+            display: block;
+            width: 200%;
+            margin-left: -100%;
+            transition: margin 0.3s ease-in 0s;
+        }
+
+        .switch-inner::before, .switch-inner::after {
+            display: block;
+            float: right;
+            width: 50%;
+            height: 20px;
+            padding: 0;
+            line-height: 20px;
+            font-size: 12px;
+            color: white;
+            font-family: Trebuchet, Arial, sans-serif;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        .switch-inner::after {
+            content: attr(data-on);
+            padding-left: 8px;
+            background-color: #236a97;
+            color: #F5F5F5;
+        }
+
+        .switch-inner::before {
+            content: attr(data-off);
+            padding-right: 8px;
+            background-color: #EEEEEE;
+            color: #999999;
+            text-align: right;
+        }
+
+        .switch-switch {
+            position: absolute;
+            display: block;
+            width: 16px;
+            height: 16px;
+            margin: 2px;
+            background: #FFFFFF;
+            top: 0;
+            bottom: 0;
+            right: 33px;
+            border: 1px solid #999999;
+            border-radius: 20px;
+            transition: all 0.3s ease-in 0s;
+        }
+
+        .switch-checkbox:checked + .switch-label .switch-inner {
+            margin-left: 0;
+        }
+
+        .switch-checkbox:checked + .switch-label .switch-switch {
+            right: 0;
+        }
+    </style>
+
+    <script>
+
+        $(document).ready(function () {
+            $("#onoffswitch").on('click', function () {
+                clickSwitch()
+            });
+
+            var clickSwitch = function () {
+                if ($("#onoffswitch").is(':checked')) {
+                    console.log("在ON的状态下");
+                } else {
+                    console.log("在OFF的状态下");
+                }
+            };
+        });
+    </script>
 </head>
 <body>
 <div id="bd" class="page-wrapper-simple">
     <div id="nonav" class="page-simple text-center" style="width:100%; margin-left: 10%; margin-right: 10%;">
-        <h1 class="maintenance-title">Export PDF Report</h1>
-        <form id="generation-form" style="display:inline-block;width: 430px;text-align:left">
-            <div class="big-spacer-bottom">
-                <label class="big-spacer-right" style="display:inline-block;width: 80px;">Issue Type: </label>
-                <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Bug" checked="checked"/>
+        <h1 class="title">Export PDF Report</h1>
+        <form id="generation-form" style="display:inline-block;width: 480px;text-align:left">
+            <div class="big-spacer-bottom" id="itype-div">
+                <label class="parameter-label">Issue Type : </label>
+                <label class="checkbox-name">
+                    <input class="icon-checkbox-checked" type="checkbox" name="itype" value="Bug" checked="checked"/>
                     Bug
                 </label>
-                <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Vulnerability"
+                <label class="checkbox-name">
+                    <input class="icon-checkbox-checked" type="checkbox" name="itype" value="Vulnerability"
                            checked="checked"/>
                     Vulnerability
                 </label>
-                <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="Code_Smell"/>
+                <label class="checkbox-name">
+                    <input class="icon-checkbox-checked" type="checkbox" name="itype" value="Code_Smell"/>
                     Code Smell
                 </label>
             </div>
 
-            <div class="big-spacer-bottom">
-                <label class="big-spacer-right" style="display:inline-block;width: 80px;">Severity Type: </label>
-                <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="BLOCKER"
+            <div class="big-spacer-bottom" id="severity-div">
+                <label class="parameter-label">Severity Type : </label>
+                <label class="checkbox-name">
+                    <input class="icon-checkbox-checked" type="checkbox" name="severity" value="BLOCKER"
                            checked="checked"/>
                     Bloker
                 </label>
-                <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="CRITICAL"
+                <label class="checkbox-name">
+                    <input class="icon-checkbox-checked" type="checkbox" name="severity" value="CRITICAL"
                            checked="checked"/>
                     Critical
                 </label>
-                <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="MAJOR"
+                <label class="checkbox-name">
+                    <input class="icon-checkbox-checked" type="checkbox" name="severity" value="MAJOR"
                            checked="checked"/>
                     Major
                 </label>
-                <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="MINOR"
+                <label class="checkbox-name">
+                    <input class="icon-checkbox-checked" type="checkbox" name="severity" value="MINOR"
                            checked="checked"/>
                     Minor
                 </label>
-                <label class="big-spacer-right">
-                    <input class="icon-checkbox-checked" type="checkbox" name="checkbox" value="INFO"
+                <label class="checkbox-name">
+                    <input class="icon-checkbox-checked" type="checkbox" name="severity" value="INFO"
                            checked="checked"/>
                     Info
                 </label>
             </div>
+
+            <div class="big-spacer-bottom">
+                <label class="parameter-label">New Issues : </label>
+                <div class="switch">
+                    <input class="switch-checkbox" id="onoffswitch" type="checkbox">
+                    <label class="switch-label" for="onoffswitch">
+                        <span class="switch-inner" data-on="New" data-off="All"></span>
+                        <span class="switch-switch"></span>
+                    </label>
+                </div>
+            </div>
+
         </form>
 
         <div class="big-spacer-top big-spacer-bottom">

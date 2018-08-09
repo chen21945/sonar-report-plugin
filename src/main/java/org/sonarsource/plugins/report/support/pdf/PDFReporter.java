@@ -43,6 +43,7 @@ public class PDFReporter {
     private Project project;
     private List<String> issueTypes;
     private List<String> severityTypes;
+    private Boolean sinceLeakPeriod;
 
     public PDFReporter(String projectKey) {
         this.projectKey = projectKey;
@@ -459,7 +460,8 @@ public class PDFReporter {
             IssueDto issueDto;
             int total;
             do {
-                issueDto = componentService.getIssueDto(this.projectKey, Arrays.asList("severities"), Arrays.asList(type.getKey()), this.severityTypes, pageSize, ++pageIndex);
+                issueDto = componentService.getIssueDto(this.projectKey, Arrays.asList("severities"), Arrays.asList(type.getKey()),
+                        this.severityTypes, this.sinceLeakPeriod, pageSize, ++pageIndex);
                 if (issueDto == null || issueDto.getTotal() == null) {
                     break;
                 }
@@ -506,6 +508,14 @@ public class PDFReporter {
         }
         severityTypes.clear();
         severityTypes.addAll(severities);
+        return this;
+    }
+
+    public PDFReporter setSinceLeakPeriod(String sinceLeakPeriod) {
+        if (StringUtils.isBlank(sinceLeakPeriod)) {
+            this.sinceLeakPeriod = false;
+        }
+        this.sinceLeakPeriod = Boolean.parseBoolean(sinceLeakPeriod);
         return this;
     }
 

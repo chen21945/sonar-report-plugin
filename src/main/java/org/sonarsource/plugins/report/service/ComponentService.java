@@ -107,7 +107,7 @@ public class ComponentService extends BaseService {
     }
 
     public List<Facet> getFacets(String projectKey, List<String> facets, List<String> types) {
-        IssueDto dto = getIssueDto(projectKey, facets, types, null, 1, 1);
+        IssueDto dto = getIssueDto(projectKey, facets, types, null, false, 1, 1);
         if (dto != null) {
             return dto.getFacets();
         }
@@ -115,7 +115,7 @@ public class ComponentService extends BaseService {
     }
 
 
-    public IssueDto getIssueDto(String projectKey, List<String> facets, List<String> types, List<String> severities, int pageSize, int pageIndex) {
+    public IssueDto getIssueDto(String projectKey, List<String> facets, List<String> types, List<String> severities, Boolean sinceLeakPeriod, int pageSize, int pageIndex) {
         if (StringUtils.isBlank(projectKey)) {
             return null;
         }
@@ -131,6 +131,9 @@ public class ComponentService extends BaseService {
         params.put("s", "FILE_LINE");
         params.put("types", typeStr);
         params.put("severities", severityStr);
+        if (sinceLeakPeriod != null) {
+            params.put("sinceLeakPeriod", sinceLeakPeriod);
+        }
         String url = getUrl(WSConfig.API_ISSUES_SEARCH, params);
 
         try {

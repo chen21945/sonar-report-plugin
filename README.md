@@ -10,6 +10,16 @@ SonarQube Report Plugin
 * resources/static/img中包含作者公司logo，需要自行修改
 * 默认使用思源黑体
 
+版本更新
+* v1.2 2018-8-9
+    * 调整页面格式，使用自定义css
+    * 增加过滤条件 sinceLeakPeriod，支持导出新增bug、缺陷
+* v1.1 2018-7-31
+    * 页面增加过滤条件，支持根据问题类型（bug,缺陷，坏味道）和严重程度过滤数据导出
+    * 字体调整为SourceHanSans
+* v1.0 2018-7 
+    * 实现sonarqube pdf导出功能，增加页面插件
+
 
 
 参考文档：

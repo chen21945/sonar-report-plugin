@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.RequestHandler;
 import org.sonar.api.server.ws.Response;
+import org.sonarsource.plugins.report.support.RequestContext;
 import org.sonarsource.plugins.report.support.pdf.PDFReporter;
 
 import java.io.ByteArrayOutputStream;
@@ -19,6 +20,9 @@ public class ReportHandler implements RequestHandler {
 
     @Override
     public void handle(Request request, Response response) throws Exception {
+        //reuse Cookie
+        RequestContext.setCookie(request.header("Cookie"));
+
         String projectKey = request.mandatoryParam("key");
         String issueTypes = request.hasParam("types") ? request.getParam("types").getValue() : null;
         String severityTypes = request.hasParam("severities") ? request.getParam("severities").getValue() : null;
@@ -42,6 +46,8 @@ public class ReportHandler implements RequestHandler {
         stream.writeTo(output);
         stream.close();
         output.close();
+        //remove cookie
+        RequestContext.clean();
         log.info("report controller end");
     }
 

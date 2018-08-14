@@ -23,6 +23,11 @@ public final class RequestManager {
      * HeaderFooter http for setting the content type of a request
      */
     private static final String CONTENT_TYPE = "content-type";
+
+    /**
+     * reuse Cookie
+     */
+    private static final String COOKIE = "Cookie";
     /**
      * Json type for a content
      */
@@ -41,6 +46,7 @@ public final class RequestManager {
 
     /**
      * Return the unique instance
+     *
      * @return the singleton
      */
     public static synchronized RequestManager getInstance() {
@@ -52,6 +58,7 @@ public final class RequestManager {
 
     /**
      * Execute a get http request
+     *
      * @param url getUrl to request
      * @return response as string
      * @throws IOException error on response
@@ -65,6 +72,7 @@ public final class RequestManager {
         final HttpGet request = new HttpGet(url);
         // set content type to json
         request.addHeader(CONTENT_TYPE, APPLICATION_JSON);
+        request.addHeader(COOKIE, RequestContext.getCookie().orElse(""));
         // future result of the request
         final HttpResponse result;
         try {
@@ -83,7 +91,8 @@ public final class RequestManager {
 
     /**
      * Execute a get http request
-     * @param url getUrl to request
+     *
+     * @param url  getUrl to request
      * @param data list of pairs containing resources to post
      * @return response as string
      * @throws IOException error on response
@@ -94,6 +103,7 @@ public final class RequestManager {
         // set the request
         final HttpPost request = new HttpPost(url);
         request.addHeader(CONTENT_TYPE, APPLICATION_JSON);
+        request.addHeader(COOKIE, RequestContext.getCookie().orElse(""));
         request.setEntity(new UrlEncodedFormEntity(data));
         // future result of the request
         final HttpResponse result;

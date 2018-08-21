@@ -5,6 +5,7 @@ import org.sonar.api.batch.postjob.PostJob;
 import org.sonar.api.batch.postjob.PostJobContext;
 import org.sonar.api.batch.postjob.PostJobDescriptor;
 import org.sonar.api.config.Configuration;
+import org.sonarsource.plugins.report.constant.Categorys;
 
 /**
  * PostJob 报表任务扩展
@@ -16,12 +17,13 @@ public class ReportPostJob implements PostJob {
 
     @Override
     public void describe(PostJobDescriptor postJobDescriptor) {
-        postJobDescriptor.name("PDFReporter");
+        postJobDescriptor.name(Categorys.PDF_REPORT.getCode());
     }
 
     @Override
     public void execute(final PostJobContext postJobContext) {
         log.info("------------------------");
         Configuration config = postJobContext.config();
+        log.info("post job config, enabled={}, issueTypes={},newIssue={} ", config.getBoolean("sonar.report.enabled"), config.get("sonar.report.issueTypes"), config.getBoolean("sonar.report.newIssue"));
     }
 }

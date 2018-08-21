@@ -1,5 +1,6 @@
 package org.sonarsource.plugins.report.support;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -8,11 +9,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.sonarsource.plugins.report.constant.WSConfig;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 import java.util.List;
 
 
+@Slf4j
 public final class RequestManager {
 
     /**
@@ -28,6 +33,11 @@ public final class RequestManager {
      * reuse Cookie
      */
     private static final String COOKIE = "Cookie";
+
+    /**
+     * Authorization
+     */
+    private static final String AUTHORIZATION = "Authorization";
     /**
      * Json type for a content
      */
@@ -72,7 +82,8 @@ public final class RequestManager {
         final HttpGet request = new HttpGet(url);
         // set content type to json
         request.addHeader(CONTENT_TYPE, APPLICATION_JSON);
-        request.addHeader(COOKIE, RequestContext.getCookie().orElse(""));
+//        request.addHeader(COOKIE, RequestContext.getCookie().orElse(""));
+        request.addHeader(AUTHORIZATION, getAuthorization());
         // future result of the request
         final HttpResponse result;
         try {
@@ -103,7 +114,8 @@ public final class RequestManager {
         // set the request
         final HttpPost request = new HttpPost(url);
         request.addHeader(CONTENT_TYPE, APPLICATION_JSON);
-        request.addHeader(COOKIE, RequestContext.getCookie().orElse(""));
+//        request.addHeader(COOKIE, RequestContext.getCookie().orElse(""));
+        request.addHeader(AUTHORIZATION, getAuthorization());
         request.setEntity(new UrlEncodedFormEntity(data));
         // future result of the request
         final HttpResponse result;
@@ -117,5 +129,17 @@ public final class RequestManager {
 
         // return string result
         return EntityUtils.toString(result.getEntity(), UTF_8);
+    }
+
+
+    private String getAuthorization() {
+        String token = WSConfig.TOKEN;
+        String authorization = null;
+        try {
+            authorization = Base64.getEncoder().encodeToString((token + ":").getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            log.warn("get authorization failed", e);
+        }
+        return authorization != null ? "Basic " + authorization : null;
     }
 }

@@ -34,6 +34,9 @@ public class FileTest {
         if (file.exists()) {
             file.delete();
         }
+        System.out.println(file.getName());
+        System.out.println(file.getParent());
+        System.out.println(file.getAbsolutePath());
         file.createNewFile();
         System.out.println(file.getName());
     }

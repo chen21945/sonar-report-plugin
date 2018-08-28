@@ -19,18 +19,21 @@
  */
 package org.sonarsource.plugins.report.extension;
 
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.sonar.api.ce.posttask.PostProjectAnalysisTask;
 import org.sonar.api.ce.posttask.Project;
 import org.sonar.api.config.Configuration;
+import org.sonar.api.config.EmailSettings;
 import org.sonar.api.platform.Server;
 import org.sonarsource.plugins.report.constant.ReportConfigs;
 import org.sonarsource.plugins.report.model.ReportConfiguration;
 import org.sonarsource.plugins.report.service.ConfigService;
+import org.sonarsource.plugins.report.support.EmailSupport;
 import org.sonarsource.plugins.report.support.exception.ReportException;
 import org.sonarsource.plugins.report.support.pdf.PDFReporter;
 
+import javax.mail.MessagingException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,10 +57,12 @@ public class ReportTask implements PostProjectAnalysisTask {
      */
     private final Configuration config;
 
-    public ReportTask(Configuration configuration, Server server) {
+    private final EmailSettings emailSettings;
+
+    public ReportTask(Configuration configuration, Server server, EmailSettings emailSettings) {
         this.config = configuration;
         this.server = server;
-        log.info("server info, server={}", JSON.toJSONString(this.server));
+        this.emailSettings = emailSettings;
     }
 
     @Override
@@ -77,10 +82,11 @@ public class ReportTask implements PostProjectAnalysisTask {
         Boolean newIssue = rconfig.getBoolean(ReportConfigs.NEW_ISSUE).orElse(false);
         List<String> issueTypes = Arrays.asList(rconfig.getStringArray(ReportConfigs.ISSUE_TYPES));
         List<String> severityTypes = Arrays.asList(rconfig.getStringArray(ReportConfigs.SEVERITY_TYPES));
+        String emails = rconfig.get(ReportConfigs.TO_EMAILS).orElse(null);
 
-        log.info("Configuration info, globalEnabled={},enabled={}, newIssue={},issueTypes={},severityTypes={}", globalEnabled, enabled, newIssue, issueTypes, severityTypes);
+        log.info("Configuration info, globalEnabled={},enabled={}, newIssue={},issueTypes={},severityTypes={}, emails={}", globalEnabled, enabled, newIssue, issueTypes, severityTypes, emails);
 
-        if (Boolean.FALSE.equals(enabled)) {
+        if (Boolean.FALSE.equals(enabled) || StringUtils.isBlank(emails)) {
             return;
         }
 
@@ -97,10 +103,12 @@ public class ReportTask implements PostProjectAnalysisTask {
             stream.writeTo(fos);
             fos.flush();
             fos.close();
+            //send emails notification
+            sendEmail(emails, file.getAbsolutePath());
         } catch (IOException e) {
             log.error("pdf report failed, error = {}", e.getMessage(), e);
         }
-
+        log.info("Report task end ===============");
     }
 
     private File getReportFile(Project project) {
@@ -116,6 +124,30 @@ public class ReportTask implements PostProjectAnalysisTask {
             }
         }
         return file;
+    }
+
+
+    private void sendEmail(String toEmails, String fileName) {
+        if (emailSettings == null) {
+            log.error("send sonarqube analysis report email failed,can not get email setting info");
+            return;
+        }
+        try {
+            EmailSupport.sendEmailWithAttachments(
+                    emailSettings.getSmtpHost(),
+                    emailSettings.getSmtpPort(),
+                    emailSettings.getSmtpUsername(),
+                    emailSettings.getSmtpPassword(),
+                    emailSettings.getFromName(),
+                    emailSettings.getFrom(),
+                    StringUtils.splitByWholeSeparator(toEmails, ","),
+                    "SonarQube Analysis Report",
+                    "",
+                    new String[]{fileName}
+            );
+        } catch (MessagingException e) {
+            log.error("send sonarqube analysis report email failed, message={}", e.getMessage(), e);
+        }
     }
 
 

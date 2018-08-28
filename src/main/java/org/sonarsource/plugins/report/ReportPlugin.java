@@ -63,6 +63,14 @@ public class ReportPlugin implements Plugin {
                         .type(PropertyType.BOOLEAN)
                         .defaultValue("true")
                         .onlyOnQualifiers(Qualifiers.PROJECT)
+                        .index(0)
+                        .build(),
+                PropertyDefinition.builder(TO_EMAILS)
+                        .name("To Emails")
+                        .description("Receive email notifications")
+                        .category(Categorys.PDF_REPORT.getCode())
+                        .type(PropertyType.STRING)
+                        .onlyOnQualifiers(Qualifiers.PROJECT)
                         .index(1)
                         .build(),
                 PropertyDefinition.builder(ISSUE_TYPES)

@@ -15,13 +15,16 @@ public class ReportConfigs {
 
     public static final String NEW_ISSUE = "sonar.report.newIssue";
 
+    public static final String TO_EMAILS = "sonar.report.emails";
+
 
     /**
      * 获取配置项
+     *
      * @return
      */
     public static List<String> getConfigKeys() {
-        return Arrays.asList(GLOBAL_ENABLED, ENABLED, ISSUE_TYPES, SEVERITY_TYPES, NEW_ISSUE);
+        return Arrays.asList(GLOBAL_ENABLED, ENABLED, ISSUE_TYPES, SEVERITY_TYPES, NEW_ISSUE, TO_EMAILS);
     }
 
 }

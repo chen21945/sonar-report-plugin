@@ -13,10 +13,7 @@ import org.sonarsource.plugins.report.support.RequestManager;
 import org.sonarsource.plugins.report.support.exception.ReportException;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -115,7 +112,7 @@ public class ComponentService extends BaseService {
     }
 
 
-    public IssueDto getIssueDto(String projectKey, List<String> facets, List<String> types, List<String> severities, Boolean sinceLeakPeriod, int pageSize, int pageIndex) {
+    public IssueDto getIssueDto(String projectKey, List<String> facets, List<String> types, Set<String> severities, Boolean sinceLeakPeriod, int pageSize, int pageIndex) {
         if (StringUtils.isBlank(projectKey)) {
             return null;
         }

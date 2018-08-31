@@ -2,6 +2,7 @@ package org.sonarsource.plugins.report.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.sonarsource.plugins.report.constant.WSConfig;
+import org.sonarsource.plugins.report.support.PropertyUtils;
 
 import java.util.Map;
 
@@ -9,11 +10,14 @@ public class BaseService {
 
     String baseUrl;
 
-    protected String getBaseUrl() {
-        if (StringUtils.isNotBlank(baseUrl)) {
-            return baseUrl;
+    private String getBaseUrl() {
+        if (StringUtils.isBlank(baseUrl)) {
+            baseUrl = PropertyUtils.get("sonar.host.url");
+            if (StringUtils.isBlank(baseUrl)) {
+                baseUrl = WSConfig.DEFAULT_HOST_URL;
+            }
         }
-        return WSConfig.HOST_URL;
+        return baseUrl;
     }
 
     public String getUrl(String api, Map<String, Object> params) {

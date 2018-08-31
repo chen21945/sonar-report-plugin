@@ -16,7 +16,7 @@ import java.util.Arrays;
  * report controller action
  */
 @Slf4j
-public class ReportHandler implements RequestHandler {
+public class ReportRequestHandler implements RequestHandler {
 
     @Override
     public void handle(Request request, Response response) throws Exception {

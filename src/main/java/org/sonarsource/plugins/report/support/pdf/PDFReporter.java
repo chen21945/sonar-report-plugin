@@ -41,8 +41,8 @@ public class PDFReporter {
 
     private String projectKey;
     private Project project;
-    private List<String> issueTypes;
-    private List<String> severityTypes;
+    private Set<String> issueTypes;
+    private Set<String> severityTypes;
     private Boolean sinceLeakPeriod;
 
     public PDFReporter(String projectKey) {
@@ -492,7 +492,7 @@ public class PDFReporter {
             return this;
         }
         if (this.issueTypes == null) {
-            issueTypes = new ArrayList<>();
+            issueTypes = new HashSet<>();
         }
         issueTypes.clear();
         issueTypes.addAll(types);
@@ -504,7 +504,7 @@ public class PDFReporter {
             return this;
         }
         if (this.severityTypes == null) {
-            severityTypes = new ArrayList<>();
+            severityTypes = new HashSet<>();
         }
         severityTypes.clear();
         severityTypes.addAll(severities);

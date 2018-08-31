@@ -3,15 +3,9 @@ package org.sonarsource.plugins.report.constant;
 public class WSConfig {
 
     /**
-     * 服务端URL地址
-     * 此处使用80端口，根据需要修改
+     * 服务端URL默认地址，可以在report.properties配置
      */
-    public static final String HOST_URL = "http://localhost/";
-
-    /**
-     * 查询用token
-     */
-    public static final String TOKEN = "22858fd738f365bd57df4a6fc3602dbcaa887eb9";
+    public static final String DEFAULT_HOST_URL = "http://localhost/";
     /**
      * 报表接口
      */

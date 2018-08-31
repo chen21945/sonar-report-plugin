@@ -133,7 +133,7 @@ public final class RequestManager {
 
 
     private String getAuthorization() {
-        String token = WSConfig.TOKEN;
+        String token = PropertyUtils.get("sonar.token");
         String authorization = null;
         try {
             authorization = Base64.getEncoder().encodeToString((token + ":").getBytes("UTF-8"));

@@ -88,7 +88,7 @@ public class EmailSupport {
         } else {
             annoymous = true;
         }
-        log.info("sending email...host={},annoymous={},fromAddress={},toAddress={},subject={},file={}", host, annoymous, fromAddress, toAddress, subject, attachFiles);
+        log.info("sending email...host={},annoymous={},fromAddress={},toAddress={},subject={},message={},file={}", host, annoymous, fromAddress, toAddress, subject, message, attachFiles);
 
         // sets SMTP server properties
         Properties properties = new Properties();
@@ -109,7 +109,7 @@ public class EmailSupport {
 
         // creates message part
         MimeBodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setContent(message, "text/html");
+        messageBodyPart.setText(message, "utf-8");
 
         // creates multi-part
         Multipart multipart = new MimeMultipart();

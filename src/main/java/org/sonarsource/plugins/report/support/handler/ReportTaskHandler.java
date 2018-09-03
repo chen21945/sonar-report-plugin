@@ -2,6 +2,7 @@ package org.sonarsource.plugins.report.support.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.mail.EmailException;
 import org.sonar.api.ce.posttask.Project;
 import org.sonar.api.config.Configuration;
 import org.sonar.api.config.EmailSettings;
@@ -9,12 +10,11 @@ import org.sonar.api.platform.Server;
 import org.sonarsource.plugins.report.constant.ReportConfigs;
 import org.sonarsource.plugins.report.model.ReportConfiguration;
 import org.sonarsource.plugins.report.service.ConfigService;
-import org.sonarsource.plugins.report.support.EmailSupport;
+import org.sonarsource.plugins.report.support.CommonEmailSupport;
 import org.sonarsource.plugins.report.support.PropertyUtils;
 import org.sonarsource.plugins.report.support.exception.ReportException;
 import org.sonarsource.plugins.report.support.pdf.PDFReporter;
 
-import javax.mail.MessagingException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -109,9 +109,8 @@ public class ReportTaskHandler {
             return;
         }
         try {
-            EmailSupport.sendEmailWithAttachments(
+            CommonEmailSupport.sendEmailWithAttachments(
                     emailSettings.getSmtpHost(),
-                    emailSettings.getSmtpPort(),
                     emailSettings.getSmtpUsername(),
                     emailSettings.getSmtpPassword(),
                     emailSettings.getFromName(),
@@ -119,9 +118,9 @@ public class ReportTaskHandler {
                     StringUtils.splitByWholeSeparator(toEmails, ","),
                     PropertyUtils.get("report.email.subject"),
                     PropertyUtils.get("report.email.message"),
-                    new String[]{fileName}
+                    fileName
             );
-        } catch (MessagingException e) {
+        } catch (EmailException e) {
             log.error("send sonarqube analysis report email failed, message={}", e.getMessage(), e);
         }
     }

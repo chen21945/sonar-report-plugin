@@ -43,10 +43,11 @@
             <version>${sonar.apiVersion}</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.sonarsource.sonarqube</groupId>
-            <artifactId>sonar-ws</artifactId>
-            <version>${sonar.apiVersion}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>26.0-jre</version>
         </dependency>
 
         <dependency>

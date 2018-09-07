@@ -15,4 +15,12 @@ public class PropertyUtils {
         return ObjectUtils.defaultIfNull(PropertySupport.getReportProperties().getProperty(key), "").trim();
     }
 
+
+    public static void set(String key, String value) {
+        if (StringUtils.isBlank(key)) {
+            return;
+        }
+        PropertySupport.getReportProperties().setProperty(key, value);
+    }
+
 }

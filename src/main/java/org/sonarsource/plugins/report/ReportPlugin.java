@@ -72,38 +72,8 @@ public class ReportPlugin implements Plugin {
                         .type(PropertyType.STRING)
                         .onlyOnQualifiers(Qualifiers.PROJECT)
                         .index(1)
-                        .build(),
-                PropertyDefinition.builder(ISSUE_TYPES)
-                        .name("Filter Issue Types")
-                        .description("Filter issue types\n (Bug,Vulnerability,Code_Smell)")
-                        .category(Categorys.PDF_REPORT.getCode())
-                        .type(PropertyType.SINGLE_SELECT_LIST)
-                        .options("Bug", "Vulnerability", "Code_Smell")
-                        .multiValues(true)
-                        .defaultValue("Bug")
-                        .onlyOnQualifiers(Qualifiers.PROJECT)
-                        .index(2)
-                        .build(),
-                PropertyDefinition.builder(SEVERITY_TYPES)
-                        .name("Filter Severity Types")
-                        .description("Filter severity types\n (BLOCKER,CRITICAL,MAJOR,MINOR,INFO)")
-                        .category(Categorys.PDF_REPORT.getCode())
-                        .type(PropertyType.SINGLE_SELECT_LIST)
-                        .options("BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO")
-                        .multiValues(true)
-                        .defaultValue("BLOCKER,CRITICAL,MAJOR")
-                        .onlyOnQualifiers(Qualifiers.PROJECT)
-                        .index(3)
-                        .build(),
-                PropertyDefinition.builder(NEW_ISSUE)
-                        .name("New Issue")
-                        .description("Only export new issues?")
-                        .category(Categorys.PDF_REPORT.getCode())
-                        .type(PropertyType.BOOLEAN)
-                        .defaultValue("false")
-                        .onlyOnQualifiers(Qualifiers.PROJECT)
-                        .index(4)
                         .build())
+
         );
     }
 }

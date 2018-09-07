@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+@Deprecated
 @Slf4j
 public class ReportTaskHandler {
 

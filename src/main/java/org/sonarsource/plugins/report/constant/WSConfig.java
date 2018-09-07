@@ -3,10 +3,6 @@ package org.sonarsource.plugins.report.constant;
 public class WSConfig {
 
     /**
-     * 服务端URL默认地址，可以在report.properties配置
-     */
-    public static final String DEFAULT_HOST_URL = "http://localhost/";
-    /**
      * 报表接口
      */
     public static final String API_REPORTS = "api/reports";

@@ -14,7 +14,7 @@ public class BaseService {
         if (StringUtils.isBlank(baseUrl)) {
             baseUrl = PropertyUtils.get("sonar.host.url");
             if (StringUtils.isBlank(baseUrl)) {
-                baseUrl = WSConfig.DEFAULT_HOST_URL;
+                baseUrl = "http://localhost:9000";
             }
         }
         return baseUrl;

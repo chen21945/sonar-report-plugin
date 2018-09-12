@@ -445,7 +445,7 @@ public class PDFReporter {
         List<SonarConstants.IssueType> types = getTypes();
         for (SonarConstants.IssueType type : types) {
             //severity
-            List<Facet> facets = componentService.getFacets(this.projectKey, Arrays.asList("severities"), Arrays.asList(type.getKey()));
+            List<Facet> facets = componentService.getFacets(this.projectKey, Arrays.asList("severities"), Arrays.asList(type.getKey()), this.sinceLeakPeriod);
             if (facets != null && facets.size() > 0) {
                 Facet facet = facets.get(0);
                 if ("severities".equals(facet.getProperty())) {

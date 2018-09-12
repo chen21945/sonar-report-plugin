@@ -103,8 +103,8 @@ public class ComponentService extends BaseService {
         return Collections.emptyList();
     }
 
-    public List<Facet> getFacets(String projectKey, List<String> facets, List<String> types) {
-        IssueDto dto = getIssueDto(projectKey, facets, types, null, false, 1, 1);
+    public List<Facet> getFacets(String projectKey, List<String> facets, List<String> types, Boolean sinceLeakPeriod) {
+        IssueDto dto = getIssueDto(projectKey, facets, types, null, sinceLeakPeriod, 1, 1);
         if (dto != null) {
             return dto.getFacets();
         }

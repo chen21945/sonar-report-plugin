@@ -160,6 +160,7 @@ public class Style {
         public static final Color COLOR_BLUE = new DeviceRgb(100, 150, 190);
         public static final Color COLOR_STEEL_BLUE = new DeviceRgb(54, 100, 139);
         public static final Color COLOR_SLATE_GREY = new DeviceRgb(198, 226, 255);
+        public static final Color COLOR_SEA_GREEN = new DeviceRgb(60, 179, 113);
     }
 
     public static final float MARGIN_LEFT = 20f;

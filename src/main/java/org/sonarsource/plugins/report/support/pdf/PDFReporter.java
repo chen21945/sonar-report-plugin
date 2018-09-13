@@ -514,26 +514,26 @@ public class PDFReporter {
     public PDFReporter setSinceLeakPeriod(String sinceLeakPeriod) {
         if (StringUtils.isBlank(sinceLeakPeriod)) {
             this.sinceLeakPeriod = false;
+        } else {
+            this.sinceLeakPeriod = Boolean.parseBoolean(sinceLeakPeriod);
         }
-        this.sinceLeakPeriod = Boolean.parseBoolean(sinceLeakPeriod);
         return this;
     }
 
 
     private Text qualityGate(String result) {
         Text qualityGate = new Text("")
-                .setFontColor(ColorConstants.WHITE)
-                .setBackgroundColor(ColorConstants.RED);
+                .setFontColor(ColorConstants.WHITE);
 
         if (StringUtils.isEmpty(result)) {
             return qualityGate;
         }
         switch (result) {
             case SonarConstants.QUALITY_GATE_ERROR:
-                qualityGate.setText(" Failed  ");
+                qualityGate.setBackgroundColor(ColorConstants.RED).setText("Failed");
                 break;
             case SonarConstants.QUALITY_GATE_OK:
-                qualityGate.setText(" Passed  ");
+                qualityGate.setBackgroundColor(Style.MyColor.COLOR_SEA_GREEN).setText("Passed");
                 break;
             default:
                 qualityGate = null;

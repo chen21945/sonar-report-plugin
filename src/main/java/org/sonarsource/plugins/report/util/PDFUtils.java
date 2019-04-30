@@ -53,9 +53,13 @@ public class PDFUtils {
     }
 
     public static Paragraph issueFileName(String file) {
-        int nameIndex = file.lastIndexOf("/") + 1;
-        String path = file.substring(file.indexOf(":") + 1, nameIndex);
-        String name = file.substring(nameIndex);
+        int pathIndex = file.lastIndexOf(":");
+        int nameIndex = file.lastIndexOf("/");
+        if (nameIndex < 0) {
+            nameIndex = pathIndex;
+        }
+        String path = file.substring(pathIndex + 1, nameIndex + 1);
+        String name = file.substring(nameIndex + 1);
         return Style.tableText()
                 .setBackgroundColor(Style.MyColor.COLOR_SLATE_GREY)
                 .add(path)
